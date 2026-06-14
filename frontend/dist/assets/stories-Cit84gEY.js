@@ -1,0 +1,1 @@
+import{bE as e}from"./index-DFqS8krw.js";const o={list:t=>e.get("/stories",{params:t}),detail:t=>e.get(`/stories/${t}`),create:t=>e.post("/stories",t),update:(t,s)=>e.put(`/stories/${t}`,s),delete:t=>e.delete(`/stories/${t}`),myStories:t=>e.get("/my-stories",{params:t}),toggleLike:t=>e.post(`/stories/${t}/like`),likeStatus:t=>e.get(`/stories/${t}/like-status`)};export{o as s};

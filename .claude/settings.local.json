@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(mysql --version)",
+      "Bash(net start *)",
+      "Bash(mysql -u root -proot -e \"CREATE DATABASE IF NOT EXISTS lanma_culture DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(mysql -u root -proot -e \"SHOW DATABASES LIKE 'lanma_culture';\")",
+      "Bash(mysql -u root -e \"CREATE DATABASE IF NOT EXISTS lanma_culture DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(mysql -u root -proot123 -e \"SELECT 1;\")",
+      "Bash(mysql -u root -p123456 -e \"SELECT 1;\")",
+      "Bash(mysql -u root -ppassword -e \"SELECT 1;\")",
+      "Read(//c/Users/yangj/**)",
+      "Read(//etc/mysql/**)",
+      "Bash(env)",
+      "Bash(timeout 10 node -e ' *)",
+      "Bash(node -e ' *)",
+      "Bash(powershell *)",
+      "Bash(mvn dependency:resolve -o)",
+      "Bash(mvn dependency:resolve)",
+      "Bash(curl -s http://localhost:3000/api/v1/stories/1)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('images:', repr\\(d['data'].get\\('images'\\)\\)\\)\")",
+      "Bash(taskkill //F //IM \"java.exe\")",
+      "Bash(curl -s http://localhost:5174/src/pages/StoryDetail.tsx)",
+      "Bash(curl -s http://localhost:5174/src/pages/Stories.tsx)",
+      "Bash(mysql *)",
+      "Bash(curl -s -X POST http://localhost:3000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"admin\",\"password\":\"admin1234\"}')",
+      "Bash(curl -s -X POST http://localhost:3000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"runner01\",\"password\":\"admin123\"}')",
+      "Bash(curl -s \"http://localhost:3000/api/v1/stories/user/2\")",
+      "Bash(npx tsc *)",
+      "WebSearch",
+      "Bash(mvn compile *)",
+      "Bash(npx vite *)",
+      "Bash(mvn spring-boot:run)",
+      "Bash(curl *)",
+      "Bash(mvn clean *)"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+server:
+  port: 3000
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/lanma_culture?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 7500
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 7500
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+app:
+  jwt:
+    secret: lanma_jwt_secret_key_2026_spring_boot_dev
+    expiration-ms: 7200000  # 2小时
+
+  upload:
+    dir: ./uploads
+
+  weather:
+    api-key: uapi-jxzhwajxL48lb_ZMfJamSWyN59WkSpuBN8a64XiF
+    api-url: https://uapis.cn/api/v1/misc/weather
+    enabled: true
+
+logging:
+  level:
+    com.lanma: debug

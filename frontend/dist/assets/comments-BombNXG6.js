@@ -1,0 +1,1 @@
+import{bE as e}from"./index-DFqS8krw.js";const o={list:(t,r)=>e.get(`/comments/${t}/${r}`),create:t=>e.post("/comments",t)};function n(t){return t?t.length<=1?t:t[0]+"*".repeat(t.length-1):"匿*"}export{o as c,n as m};

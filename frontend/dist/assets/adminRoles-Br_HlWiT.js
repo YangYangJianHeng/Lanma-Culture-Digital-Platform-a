@@ -1,0 +1,1 @@
+import{bE as t}from"./index-DFqS8krw.js";const s={list:()=>t.get("/admin/roles"),create:e=>t.post("/admin/roles",e),update:(e,a)=>t.put(`/admin/roles/${e}`,a),delete:e=>t.delete(`/admin/roles/${e}`)};export{s as a};

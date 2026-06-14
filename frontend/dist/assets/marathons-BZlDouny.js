@@ -1,0 +1,1 @@
+import{bE as t}from"./index-DFqS8krw.js";const n={list:()=>t.get("/marathons"),detail:a=>t.get(`/marathons/${a}`),adminList:()=>t.get("/admin/marathons"),create:a=>t.post("/admin/marathons",a),update:(a,e)=>t.put(`/admin/marathons/${a}`,e),delete:a=>t.delete(`/admin/marathons/${a}`)};export{n as m};
