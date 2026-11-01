@@ -1,0 +1,39 @@
+<view class="page">
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{activeTab == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{items.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">暂无跑团</view>
+  </view>
+
+  <view wx:for="{{items}}" wx:key="id" class="card">
+    <view class="card-head">
+      <view class="title">{{item.name}}</view>
+      <view class="status status-{{item.status}}">{{item.status == 'pending' ? '待审核' : item.status == 'approved' ? '已成立' : item.status == 'rejected' ? '已驳回' : '已解散'}}</view>
+    </view>
+    <view class="meta">
+      <view>📍 {{item.city || '未填写'}} {{item.baseLocation ? '· ' + item.baseLocation : ''}}</view>
+      <view>👤 团长:{{item.leaderName || item.leader_name}}</view>
+      <view>👥 成员 {{item.memberCount || item.member_count || 0}} 人 · 总跑量 {{item.totalDistanceKm || item.total_distance_km || 0}} km</view>
+      <view wx:if="{{item.slogan}}">💬 {{item.slogan}}</view>
+    </view>
+    <view wx:if="{{item.reviewNote || item.review_note}}" class="note">📝 审核意见:{{item.reviewNote || item.review_note}}</view>
+
+    <view class="actions">
+      <view wx:if="{{item.status == 'pending'}}" class="btn btn-ok" data-id="{{item.id}}" data-action="approve" bindtap="onReview">✓ 通过</view>
+      <view wx:if="{{item.status == 'pending'}}" class="btn btn-bad" data-id="{{item.id}}" data-action="reject" bindtap="onReview">✗ 驳回</view>
+      <view wx:if="{{item.status == 'approved'}}" class="btn btn-warn" data-id="{{item.id}}" bindtap="onDisband">⏹ 解散</view>
+      <view wx:if="{{item.status == 'approved'}}" class="btn btn-ghost" data-id="{{item.id}}" bindtap="onShowMembers">👥 成员</view>
+      <view class="btn btn-danger" data-id="{{item.id}}" bindtap="onDelete">🗑 删除</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{finished && items.length > 0}}" class="loading">没有更多了</view>
+</view>

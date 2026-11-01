@@ -1,0 +1,112 @@
+<view class="page">
+  <!-- Hero -->
+  <view class="hero">
+    <view class="hero-content">
+      <view class="hero-title">🏛 兰马数字展馆</view>
+      <view class="hero-sub">3D 轻量化浏览 · 一秒穿越兰马文化时空</view>
+    </view>
+    <view class="hero-tag">3D</view>
+  </view>
+
+  <!-- 分类 -->
+  <scroll-view scroll-x class="tab-row" enable-flex show-scrollbar="{{false}}">
+    <view class="tab-chip {{activeTab == item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key"
+          data-key="{{item.key}}" bindtap="onTabTap" hover-class="tab-hover">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- 加载骨架 -->
+  <view wx:if="{{loading}}" class="grid">
+    <view class="ex-card" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this">
+      <view class="ex-cover skel"></view>
+      <view class="skel-line w70"></view>
+      <view class="skel-line w40"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{list.length === 0}}" class="empty">
+    <view class="empty-icon">🏛</view>
+    <view>暂无展品</view>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="grid">
+    <view class="ex-card card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}"
+          bindtap="openDetail" hover-class="card-hover">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" class="ex-cover" mode="aspectFill" lazy-load="{{true}}"></image>
+      <view wx:else class="ex-cover fallback">
+          <text wx:if="{{item.category == 'medal'}}">🏅</text>
+          <text wx:elif="{{item.category == 'landmark'}}">📍</text>
+          <text wx:elif="{{item.category == 'culture'}}">🏯</text>
+          <text wx:elif="{{item.category == 'history'}}">🕰</text>
+          <text wx:else>🏛</text>
+      </view>
+      <view class="ex-cat-tag">
+          <text wx:if="{{item.category == 'medal'}}">🏅 奖牌</text>
+          <text wx:elif="{{item.category == 'landmark'}}">📍 地标</text>
+          <text wx:elif="{{item.category == 'culture'}}">🏯 文化</text>
+          <text wx:elif="{{item.category == 'history'}}">🕰 历史</text>
+      </view>
+      <view wx:if="{{item.pan}}" class="ex-360">360°</view>
+      <view class="ex-name">{{item.name}}</view>
+      <view wx:if="{{item.year}}" class="ex-year">{{item.year}}</view>
+    </view>
+  </view>
+</view>
+
+<!-- 沉浸式 3D 详情 -->
+<view class="detail-mask" wx:if="{{detail}}" bindtap="closeDetail">
+  <view class="detail-wrap" catchtap="noop">
+    <view class="detail-3d {{immersive ? 'immersive' : ''}}">
+      <swiper class="angle-swiper" current="{{detailIndex}}" bindchange="onAngleChange"
+              indicator-dots="{{false}}" circular="{{true}}"
+              duration="200" easing-function="easeInOutCubic">
+        <swiper-item wx:for="{{detail.angles}}" wx:key="*this">
+          <image wx:if="{{item}}" src="{{item}}" class="angle-img" mode="aspectFit" lazy-load="{{true}}"
+                 bindtap="previewCurrentImage" data-url="{{item}}"></image>
+          <view wx:else class="angle-fallback">🏅</view>
+        </swiper-item>
+      </swiper>
+
+      <!-- 顶部控制 -->
+      <view class="ctrl-top">
+        <view class="ctrl-btn" catchtap="toggleImmersive" hover-class="btn-hover">
+          {{immersive ? '退出沉浸' : '沉浸模式'}}
+        </view>
+        <view class="ctrl-close" catchtap="closeDetail">✕</view>
+      </view>
+
+      <!-- 角度指示器 -->
+      <view class="angle-dots">
+        <view class="dot {{detailIndex == index ? 'active' : ''}}"
+              wx:for="{{detail.angles}}" wx:key="*this" wx:for-index="index"></view>
+      </view>
+
+      <!-- 陀螺仪提示 -->
+      <view wx:if="{{immersive && gyroEnabled}}" class="gyro-hint">📱 左右倾斜切换视角</view>
+      <view wx:if="{{immersive && !gyroEnabled}}" class="gyro-hint">👆 左右滑动切换视角</view>
+    </view>
+
+    <!-- 底部信息(沉浸模式下隐藏) -->
+    <view class="detail-info" wx:if="{{!immersive}}">
+      <view class="detail-name">{{detail.name}}</view>
+      <view class="detail-desc">{{detail.description}}</view>
+      <view class="detail-actions">
+        <view wx:if="{{detail.category == 'medal' || detail.category == 'landmark'}}"
+              class="action-btn primary" catchtap="goEntity"
+              data-type="{{detail.category}}"
+              data-id="{{detail.id}}">查看完整模块</view>
+        <button class="action-btn share" open-type="share">
+          <text>🔗 分享好友</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 单图预览 -->
+<view class="preview-mask" wx:if="{{showPreview}}" bindtap="closePreview">
+  <image src="{{previewUrl}}" mode="aspectFit" class="preview-img"></image>
+  <view class="preview-close">点击任意处关闭</view>
+</view>

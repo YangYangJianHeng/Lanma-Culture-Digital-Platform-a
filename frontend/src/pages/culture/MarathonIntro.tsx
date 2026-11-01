@@ -87,10 +87,12 @@ const MarathonIntro: React.FC = () => {
               borderRadius: 16, border: '1px solid rgba(255,255,255,0.3)',
               overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
               height: '100%', minHeight: 460,
+              position: 'relative',
             }}>
               {images.length > 0 ? (
                 <Carousel
                   ref={carouselRef}
+                  arrows
                   autoplay
                   autoplaySpeed={4000}
                   effect="fade"

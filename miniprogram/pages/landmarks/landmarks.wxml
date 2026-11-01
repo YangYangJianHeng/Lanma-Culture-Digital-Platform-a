@@ -1,0 +1,149 @@
+<view class="page">
+  <!-- 顶部:分类 + 收藏 + 视图切换 -->
+  <view class="cat-row-wrap">
+    <scroll-view scroll-x class="cat-row" enable-flex show-scrollbar="{{false}}">
+      <view class="cat-chip {{item == activeCat ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this"
+            data-cat="{{item}}" bindtap="onCatTap">{{item}}</view>
+    </scroll-view>
+    <view class="fav-btn {{showFavOnly ? 'active' : ''}}" bindtap="onToggleFavFilter">⭐ 收藏</view>
+    <view class="view-toggle {{viewMode == 'map' ? 'active' : ''}}" bindtap="onToggleView">
+        {{viewMode == 'list' ? '🗺 地图' : '📋 列表'}}
+    </view>
+  </view>
+
+  <!-- 地图视图 -->
+  <view wx:if="{{viewMode == 'map'}}" class="map-view">
+    <map id="landmarksMap"
+         class="lm-map"
+         latitude="{{mapCenter.latitude}}"
+         longitude="{{mapCenter.longitude}}"
+         markers="{{markers}}"
+         scale="{{mapScale}}"
+         show-location="{{true}}"
+         bindmarkertap="onMarkerTap"
+         bindregionchange="onRegionChange"
+         enable-zoom="{{true}}"
+         enable-scroll="{{true}}">
+    </map>
+
+    <!-- 地图顶部浮层 -->
+    <view class="map-overlay-top">
+      <view class="map-tag">{{landmarks.length}} 个地标 · 按距离排序</view>
+    </view>
+
+    <!-- 地图底部打卡列表 -->
+    <view class="map-bottom-sheet {{sheetExpanded ? 'expanded' : ''}}">
+      <view class="sheet-handle" bindtap="onToggleSheet">
+        <view class="sheet-handle-bar"></view>
+      </view>
+      <view wx:if="{{activeMarker}}" class="sheet-active" data-id="{{activeMarker.id}}" bindtap="openDetail">
+        <image wx:if="{{activeMarker.cover_image}}" src="{{activeMarker.cover_image}}" class="sheet-cover" mode="aspectFill"></image>
+        <view wx:else class="sheet-cover fallback">📍</view>
+        <view class="sheet-info">
+          <view class="sheet-name">{{activeMarker.name}}</view>
+          <view class="sheet-meta text-muted text-small">{{activeMarker.category}} · {{activeMarker.distance_from_start || 0}} km</view>
+          <view class="sheet-desc">{{activeMarker.content}}</view>
+        </view>
+        <view class="sheet-actions">
+          <view class="sheet-btn" catchtap="openMap" data-lat="{{activeMarker.latitude}}" data-lng="{{activeMarker.longitude}}" data-name="{{activeMarker.name}}">🧭 导航</view>
+          <view class="sheet-btn sheet-btn-primary" catchtap="onCheckIn" data-id="{{activeMarker.id}}">📍 打卡</view>
+        </view>
+      </view>
+
+      <scroll-view scroll-y class="sheet-list" wx:if="{{sheetExpanded}}">
+        <view class="sheet-item {{activeMarker.id == item.id ? 'active' : ''}}"
+              wx:for="{{landmarks}}" wx:key="id"
+              data-id="{{item.id}}" bindtap="onSelectMarker" hover-class="sheet-item-hover">
+          <image wx:if="{{item.cover_image}}" src="{{item.cover_image}}" class="sheet-item-cover" mode="aspectFill"></image>
+          <view wx:else class="sheet-item-cover fallback">📍</view>
+          <view class="sheet-item-info">
+            <view class="sheet-item-name">{{item.name}}</view>
+            <view class="sheet-item-meta text-muted text-small">{{item.category}} · {{item.distance_from_start || 0}} km</view>
+          </view>
+          <view wx:if="{{item.checkedIn}}" class="sheet-item-check">✓</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 列表视图 -->
+  <view wx:if="{{viewMode == 'list'}}">
+    <view wx:if="{{landmarks.length === 0 && !loading}}" class="empty">
+      <view class="empty-icon">📍</view>
+      <view>{{showFavOnly ? '还没有收藏的地标' : '暂无地标'}}</view>
+    </view>
+
+    <view class="list">
+      <view class="lm-card card" wx:for="{{landmarks}}" wx:key="id"
+            data-id="{{item.id}}" data-lat="{{item.latitude}}" data-lng="{{item.longitude}}" data-name="{{item.name}}"
+            bindtap="openDetail" hover-class="card-hover">
+        <image wx:if="{{item.cover_image}}" src="{{item.cover_image}}" class="lm-cover" mode="aspectFill"></image>
+        <view wx:else class="lm-cover fallback">📍</view>
+        <view class="lm-body">
+          <view class="lm-head">
+            <text class="lm-name">{{item.name}}</text>
+            <text class="km-tag">{{item.distance_from_start || 0}} km</text>
+          </view>
+          <view class="lm-meta">
+            <text class="tag">{{item.category}}</text>
+            <text wx:if="{{item.checkedIn}}" class="tag tag-check">✓ 已打卡</text>
+          </view>
+          <view class="lm-desc">{{item.content}}</view>
+          <view class="lm-foot">
+            <view wx:if="{{item.audio_url}}" class="audio-tag">🔊 语音讲解</view>
+            <view wx:if="{{item.video_url}}" class="audio-tag">🎬 视频</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详情弹层 -->
+  <view class="modal-mask" wx:if="{{detail}}" bindtap="closeDetail">
+    <view class="modal" catchtap="noop">
+      <image wx:if="{{detail.cover_image}}" src="{{detail.cover_image}}" class="modal-img" mode="aspectFill"></image>
+      <view wx:else class="modal-img fallback">📍</view>
+      <view class="modal-body">
+        <view class="modal-title">{{detail.name}}</view>
+        <view class="modal-meta">
+          <text class="tag">{{detail.category}}</text>
+          <text class="text-muted text-small">📍 {{detail.distance_from_start || 0}} km</text>
+          <text wx:if="{{detail.checkedIn}}" class="tag tag-check">✓ 已打卡</text>
+        </view>
+        <view class="modal-desc">{{detail.content}}</view>
+
+        <view class="modal-actions">
+          <view wx:if="{{detail.audio_url}}" class="action-btn {{isPlaying ? 'playing' : ''}}" catchtap="playAudio">
+            {{isPlaying ? '⏸ 暂停语音' : '🔊 播放语音讲解'}}
+          </view>
+          <view wx:if="{{detail.video_url}}" class="action-btn">🎬 查看视频</view>
+        </view>
+
+        <view wx:if="{{detail.latitude && detail.longitude}}"
+              class="map-btn-big" catchtap="openMap" data-lat="{{detail.latitude}}" data-lng="{{detail.longitude}}" data-name="{{detail.name}}">
+          🧭 一键导航
+        </view>
+
+        <view class="modal-actions">
+          <view class="fav-toggle {{detailFav ? 'active' : ''}}" catchtap="onToggleFav" data-id="{{detail.id}}">
+            {{detailFav ? '★ 已收藏' : '☆ 收藏'}}
+          </view>
+          <view class="checkin-btn {{detail.checkedIn ? 'checked' : ''}}" catchtap="onCheckIn" data-id="{{detail.id}}">
+            {{detail.checkedIn ? '✓ 已打卡' : '📍 打卡'}}
+          </view>
+        </view>
+
+        <view class="modal-actions">
+          <button class="share-btn" open-type="share">
+            <text>🔗 分享好友</text>
+          </button>
+          <view class="poster-btn" catchtap="onGeneratePoster" data-id="{{detail.id}}">
+            <text>🖼 生成分享卡</text>
+          </view>
+        </view>
+
+        <view class="modal-close" bindtap="closeDetail">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

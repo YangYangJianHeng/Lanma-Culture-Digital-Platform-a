@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,13 +24,57 @@ public class StoryController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<Story>>> list(
+    public ResponseEntity<ApiResponse<PageResponse<Map<String, Object>>>> list(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "12") int limit,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String keyword) {
-        PageResponse<Story> result = storyService.getPublicStories(page, limit, year, keyword);
+        PageResponse<Story> pageResult = storyService.getPublicStories(page, limit, year, keyword);
+        var items = pageResult.getItems().stream().map(s -> enrichStoryWithAuthor(s)).toList();
+        var result = new PageResponse<Map<String, Object>>(
+                pageResult.getTotal(), page, limit, pageResult.getTotalPages(), items);
         return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<ApiResponse<PageResponse<Story>>> myStories(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int limit,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        PageResponse<Story> result = storyService.getMyStories(userId, page, limit);
+        return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
+    private Map<String, Object> enrichStoryWithAuthor(Story s) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", s.getId());
+        m.put("user_id", s.getUserId());
+        m.put("race_year", s.getRaceYear());
+        m.put("bib_number", s.getBibNumber());
+        m.put("finish_time", s.getFinishTime());
+        m.put("title", s.getTitle());
+        m.put("content", s.getContent());
+        m.put("images", s.getImageList());
+        m.put("is_public", s.getIsPublic());
+        m.put("likes_count", s.getLikesCount());
+        m.put("created_at", s.getCreatedAt());
+        m.put("updated_at", s.getUpdatedAt());
+        try {
+            User u = userService.getUserById(s.getUserId());
+            Map<String, Object> author = new HashMap<>();
+            author.put("id", u.getId());
+            author.put("username", u.getUsername());
+            author.put("avatar_url", u.getAvatarUrl());
+            m.put("author", author);
+        } catch (Exception e) {
+            Map<String, Object> author = new HashMap<>();
+            author.put("id", s.getUserId());
+            author.put("username", "已注销");
+            author.put("avatar_url", null);
+            m.put("author", author);
+        }
+        return m;
     }
 
     @GetMapping("/user/{userId}")

@@ -1,0 +1,50 @@
+<view class="page">
+  <view wx:if="{{publications.length === 0 && !loading}}" class="empty">暂无资讯</view>
+
+  <view class="list">
+    <view class="pub-card card" wx:for="{{publications}}" wx:key="id"
+          data-id="{{item.id}}" bindtap="openDetail" hover-class="card-hover">
+      <view wx:if="{{item.hasCover}}" class="pub-cover">
+        <image src="{{item.coverImage || item.cover_image || item.thumbnail}}" mode="aspectFill"></image>
+        <view wx:if="{{item.category}}" class="pub-cat">{{item.category}}</view>
+      </view>
+      <view class="pub-body">
+        <view class="pub-title">{{item.title}}</view>
+        <view wx:if="{{item.summary}}" class="pub-summary">{{item.summary}}</view>
+        <view class="pub-meta">
+          <text class="pub-time">{{item.createdText}}</text>
+          <text wx:if="{{item.author}}" class="pub-author">· {{item.author}}</text>
+          <text wx:if="{{item.viewCount}}" class="pub-views">👁 {{item.viewCount || 0}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详情弹层 -->
+  <view class="modal-mask" wx:if="{{detail}}" bindtap="closeDetail">
+    <view class="modal" catchtap="noop">
+      <image wx:if="{{detail.coverImage}}" src="{{detail.coverImage}}" class="modal-cover" mode="aspectFill"></image>
+      <view wx:else class="modal-cover fallback">📢</view>
+      <view class="modal-body">
+        <view class="modal-cat" wx:if="{{detail.category}}">{{detail.category}}</view>
+        <view class="modal-title">{{detail.title}}</view>
+        <view class="modal-meta">
+          <text>📅 {{detail.createdText}}</text>
+          <text wx:if="{{detail.author}}">· {{detail.author}}</text>
+        </view>
+        <view wx:if="{{detail.summary}}" class="modal-sum">{{detail.summary}}</view>
+
+        <view class="modal-divider"></view>
+
+        <rich-text nodes="{{detailRichText}}" class="modal-content"></rich-text>
+
+        <view wx:if="{{detail.source}}" class="modal-source">来源：{{detail.source}}</view>
+
+        <button class="share-btn" open-type="share">
+          <text>🔗 分享给朋友</text>
+        </button>
+        <view class="modal-close" bindtap="closeDetail">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

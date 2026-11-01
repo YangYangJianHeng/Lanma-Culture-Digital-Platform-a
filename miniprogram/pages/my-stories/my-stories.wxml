@@ -1,0 +1,42 @@
+<view class="page">
+  <view class="header-bar card">
+    <view class="title-block">
+      <view class="title">📚 我的故事</view>
+      <view class="title-sub">累计 {{pager.total}} 篇</view>
+    </view>
+    <view class="add-btn" bindtap="goPublish" hover-class="btn-hover">+ 发布新故事</view>
+  </view>
+
+  <view wx:if="{{stories.length === 0}}" class="empty">
+    <view class="empty-icon">📝</view>
+    <view>还没有发布过故事~</view>
+    <view class="empty-tip">点击右上角"发布新故事"开始你的第一篇</view>
+  </view>
+
+  <view class="story-item card" wx:for="{{stories}}" wx:key="id"
+        data-id="{{item.id}}" data-idx="{{index}}" bindtap="goDetail" bindlongpress="onLongPress" hover-class="card-hover">
+    <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" class="story-cover" mode="aspectFill"></image>
+    <view class="story-head">
+      <view class="story-title">{{item.title}}</view>
+      <view class="more-btn" catchtap="onMoreTap" data-id="{{item.id}}" data-idx="{{index}}">⋯</view>
+    </view>
+
+    <view class="story-meta text-muted text-small">
+      <text>{{item.race_year}}年</text>
+      <text class="dot">·</text>
+      <text class="public-tag {{item.is_public === 1 ? 'public' : 'private'}}" bindtap="onTogglePublic" data-id="{{item.id}}" data-idx="{{index}}">{{item.publicText}}</text>
+      <text class="dot">·</text>
+      <text>{{item.createdText}}</text>
+    </view>
+
+    <view class="story-content">{{item.content}}</view>
+
+    <view class="story-stats">
+      <text>👍 {{item.likes_count || 0}}</text>
+      <text wx:if="{{item.finish_time}}" class="stats-divider">·</text>
+      <text wx:if="{{item.finish_time}}">⏱ {{item.finish_time}}</text>
+    </view>
+  </view>
+
+  <view class="float-add" bindtap="goPublish" hover-class="btn-hover">＋</view>
+</view>

@@ -4,6 +4,7 @@ import com.lanma.culture.dto.*;
 import com.lanma.culture.entity.User;
 import com.lanma.culture.security.JwtTokenProvider;
 import com.lanma.culture.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -20,6 +22,25 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+
+    /**
+     * 微信一键登录:小程序端 wx.login 拿 code + 头像昵称,后端换 openid 或本地稳定哈希,
+     * 命中则直接返回 token,未命中则创建匿名账号并返回。
+     */
+    @PostMapping("/wx-login")
+    public ResponseEntity<ApiResponse<AuthResponse>> wxLogin(@Valid @RequestBody WxLoginRequest request) {
+        try {
+            AuthResponse authResponse = userService.wxLogin(request);
+            return ResponseEntity.ok(ApiResponse.success("微信登录成功", authResponse));
+        } catch (IllegalArgumentException e) {
+            log.warn("wx-login rejected: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(ApiResponse.badRequest(e.getMessage()));
+        } catch (Exception e) {
+            log.error("wx-login error", e);
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error(500, "微信登录失败:" + e.getMessage()));
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {

@@ -1,0 +1,39 @@
+<view class="page">
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{activeTab == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- 浮动创建按钮 -->
+  <view class="fab" bindtap="goCreate" hover-class="fab-hover">＋</view>
+
+  <view wx:if="{{items.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">🏃</view>
+    <view class="empty-text">暂无{{activeTab == 'mine' ? '已参与' : '约跑'}}活动</view>
+    <view class="empty-tip">点击右下角 ＋ 发起你的第一次约跑</view>
+  </view>
+
+  <view wx:for="{{items}}" wx:key="id" class="card" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="card-head">
+      <view class="title">{{item.title}}</view>
+      <view wx:if="{{item.status == 'pending'}}" class="status status-pending">审核中</view>
+      <view wx:elif="{{item.status == 'closed'}}" class="status status-closed">已关闭</view>
+      <view wx:elif="{{item.status == 'rejected'}}" class="status status-rejected">已驳回</view>
+      <view wx:else class="status status-open">招募中</view>
+    </view>
+    <view class="meta">
+      <view class="meta-row">📍 {{item.location || '未填写'}}</view>
+      <view class="meta-row">🕒 {{formatTime(item.startTime || item.start_time)}}</view>
+      <view wx:if="{{item.paceRange || item.pace_range}}" class="meta-row">🏃 配速 {{item.paceRange || item.pace_range}}</view>
+      <view class="meta-row">👥 已报名 {{item.registeredCount || item.registered_count || 0}} / {{item.capacity || '不限'}}</view>
+    </view>
+    <view wx:if="{{item.description}}" class="desc">{{item.description}}</view>
+    <view class="organizer">👤 {{item.organizerName || item.organizer_name}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{finished && items.length > 0}}" class="loading">— 没有更多了 —</view>
+</view>

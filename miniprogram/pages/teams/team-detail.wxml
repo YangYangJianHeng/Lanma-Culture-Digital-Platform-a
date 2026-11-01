@@ -1,0 +1,145 @@
+<view wx:if="{{team}}" class="page">
+  <!-- 头部 -->
+  <view class="hero">
+    <view class="hero-logo">{{team.name.slice(0, 1)}}</view>
+    <view class="hero-body">
+      <view class="hero-name">{{team.name}}</view>
+      <view class="hero-slogan">{{team.slogan || '一起跑,跑更远'}}</view>
+      <view class="hero-meta">
+        <text>📍 {{team.city || '未填写'}}</text>
+        <text>👥 {{team.memberCount || 0}}人</text>
+        <text>🏃 {{team.totalDistanceKm || 0}}km</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-row">
+    <view wx:if="{{!joined}}" class="btn btn-primary" bindtap="onJoin">加入跑团</view>
+    <view wx:elif="{{!isLeader}}" class="btn btn-warn" bindtap="onLeave">退出跑团</view>
+    <view wx:if="{{joined || isLeader}}" class="btn btn-ghost" bindtap="onCreateDynamic">发动态</view>
+    <view wx:if="{{isLeader}}" class="btn btn-ghost" bindtap="onCreateChallenge">发挑战</view>
+    <view class="btn btn-ghost" bindtap="onCreateInvite">邀请码</view>
+  </view>
+
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{activeTab == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- 团信息 -->
+  <view wx:if="{{activeTab == 'info'}}" class="content">
+    <view wx:if="{{team.description}}" class="section">
+      <view class="section-title">📝 跑团介绍</view>
+      <view class="section-body">{{team.description}}</view>
+    </view>
+    <view class="section">
+      <view class="section-title">🏠 主基地</view>
+      <view class="section-body">{{team.baseLocation || '未填写'}}</view>
+    </view>
+    <view class="section">
+      <view class="section-title">📊 团队数据</view>
+      <view class="data-grid">
+        <view class="data-cell">
+          <view class="data-num">{{team.totalDistanceKm || 0}}</view>
+          <view class="data-label">累计跑量(km)</view>
+        </view>
+        <view class="data-cell">
+          <view class="data-num">{{team.memberCount || 0}}</view>
+          <view class="data-label">成员数</view>
+        </view>
+        <view class="data-cell">
+          <view class="data-num">{{team.avgPaceSecPerKm ? '5\'' + (team.avgPaceSecPerKm % 60) + '"' : '--'}}</view>
+          <view class="data-label">平均配速</view>
+        </view>
+      </view>
+    </view>
+    <view class="section">
+      <view class="section-title-row">
+        <view class="section-title">🔗 邀请码</view>
+        <view class="invite-create" bindtap="onCreateInvite">+ 生成</view>
+      </view>
+      <view wx:if="{{invites.length == 0}}" class="empty-tip">尚未生成邀请码</view>
+      <view wx:for="{{invites}}" wx:key="id" class="invite-row">
+        <view class="invite-code">{{item.code}}</view>
+        <view class="invite-meta">已用 {{item.currentUses}}/{{item.maxUses}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 动态 -->
+  <view wx:if="{{activeTab == 'dynamics'}}" class="content">
+    <view wx:if="{{dynamics.length == 0}}" class="empty">
+      <view class="empty-icon">📰</view>
+      <view class="empty-text">还没有动态,{{joined ? '点击下方按钮发一条' : '加入跑团后即可发动态'}}</view>
+    </view>
+    <view wx:for="{{dynamics}}" wx:key="id" class="dynamic-card">
+      <view class="dynamic-head">
+        <view class="avatar">{{(item.userName || '匿').slice(0, 1)}}</view>
+        <view>
+          <view class="dynamic-name">{{item.userName || '匿名'}}</view>
+          <view class="dynamic-meta">{{item.createdAt || item.created_at}}</view>
+        </view>
+      </view>
+      <view wx:if="{{item.title}}" class="dynamic-title">{{item.title}}</view>
+      <view class="dynamic-content">{{item.content}}</view>
+      <view wx:if="{{item.trainingDistanceKm}}" class="dynamic-tag">🏃 {{item.trainingDistanceKm}}km · 配速 {{item.trainingPaceSecPerKm || '--'}}</view>
+      <view class="dynamic-actions">
+        <text class="action-item">❤️ {{item.likeCount || 0}}</text>
+        <text class="action-item">💬 {{item.commentCount || 0}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 挑战 -->
+  <view wx:if="{{activeTab == 'challenges'}}" class="content">
+    <view wx:if="{{challenges.length == 0}}" class="empty">
+      <view class="empty-icon">🎯</view>
+      <view class="empty-text">尚未发起里程挑战</view>
+    </view>
+    <view wx:for="{{challenges}}" wx:key="id" class="challenge-card">
+      <view class="challenge-head">
+        <view class="challenge-name">{{item.name}}</view>
+        <view class="status-pill status-{{item.status}}">
+          {{item.status == 'ongoing' ? '进行中' : item.status == 'finished' ? '已结束' : '已取消'}}
+        </view>
+      </view>
+      <view class="challenge-info">🎯 目标 {{item.targetKm}} km · {{item.durationDays}} 天</view>
+      <view wx:if="{{item.description}}" class="challenge-desc">{{item.description}}</view>
+      <view wx:if="{{item.rewardText}}" class="challenge-reward">🎁 {{item.rewardText}}</view>
+      <view wx:if="{{item.status == 'ongoing'}}" class="challenge-actions">
+        <view class="btn btn-primary btn-sm" data-id="{{item.id}}" bindtap="onJoinChallenge">参与挑战</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成员 -->
+  <view wx:if="{{activeTab == 'members'}}" class="content">
+    <view wx:if="{{members.length == 0}}" class="empty">
+      <view class="empty-icon">👥</view>
+      <view class="empty-text">暂无成员</view>
+    </view>
+    <view wx:for="{{members}}" wx:key="id" class="member-card">
+      <view class="avatar">{{(item.userName || '匿').slice(0, 1)}}</view>
+      <view class="member-info">
+        <view class="member-name">{{item.userName || '匿名'}}</view>
+        <view class="member-meta">
+          <text class="role-{{item.role}}">
+            {{item.role == 'leader' ? '团长' : item.role == 'vice_leader' ? '副团长' : '团员'}}
+          </text>
+          <text>🏃 {{item.distanceKm || 0}}km</text>
+          <text>📅 {{item.runCount || 0}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:elif="{{!loading}}" class="empty">
+  <view class="empty-icon">🚫</view>
+  <view class="empty-text">跑团不存在</view>
+</view>
+
+<view wx:if="{{loading}}" class="loading">加载中...</view>

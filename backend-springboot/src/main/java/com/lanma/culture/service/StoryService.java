@@ -9,7 +9,6 @@ import com.lanma.culture.repository.StoryRepository;
 import com.lanma.culture.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class StoryService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
-    @Cacheable(value = "stories", key = "'public:' + #page + ':' + #limit + ':' + (#year ?: 'all') + ':' + (#keyword ?: '')")
     public PageResponse<Story> getPublicStories(int page, int limit, Integer year, String keyword) {
         Page<Story> pageResult = storyRepository.findPublicStories(year, keyword, PageRequest.of(page - 1, limit));
 
@@ -41,13 +39,13 @@ public class StoryService {
         );
     }
 
-    @Cacheable(value = "stories", key = "#id")
     public Story getById(Long id) {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("故事不存在"));
         return story;
     }
 
+    @Transactional
     @CacheEvict(value = "stories", allEntries = true)
     public Story create(Long userId, StoryRequest request) {
         Story story = new Story();
@@ -65,6 +63,7 @@ public class StoryService {
         return storyRepository.save(story);
     }
 
+    @Transactional
     @CacheEvict(value = "stories", allEntries = true)
     public Story update(Long id, Long userId, StoryRequest request) {
         Story story = getById(id);
@@ -83,6 +82,7 @@ public class StoryService {
         return storyRepository.save(story);
     }
 
+    @Transactional
     @CacheEvict(value = "stories", allEntries = true)
     public void delete(Long id, Long userId) {
         Story story = getById(id);
@@ -159,6 +159,7 @@ public class StoryService {
         );
     }
 
+    @Transactional
     @CacheEvict(value = "stories", allEntries = true)
     public Story adminUpdate(Long id, StoryRequest request) {
         Story story = getById(id);
@@ -166,6 +167,7 @@ public class StoryService {
         return storyRepository.save(story);
     }
 
+    @Transactional
     @CacheEvict(value = "stories", allEntries = true)
     public void adminDelete(Long id) {
         storyRepository.deleteById(id);

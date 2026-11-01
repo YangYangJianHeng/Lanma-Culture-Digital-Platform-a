@@ -1,0 +1,48 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-icon">🔗</view>
+    <view class="hero-title">邀请码兑换</view>
+    <view class="hero-sub">输入 8 位邀请码,一键加入跑团或约跑活动</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">输入邀请码</view>
+    <view class="code-input-row">
+      <input class="code-input" placeholder="例:ABC12345" maxlength="8" value="{{code}}" bindinput="onInput" />
+      <view class="scan-btn" bindtap="onScan">📷 扫码</view>
+    </view>
+    <view class="submit-btn {{submitting ? 'btn-disabled' : ''}}" bindtap="onResolve">
+      {{submitting ? '兑换中...' : '立即兑换'}}
+    </view>
+    <view wx:if="{{errMsg}}" class="error-tip">{{errMsg}}</view>
+  </view>
+
+  <view wx:if="{{resolved}}" class="card">
+    <view class="card-title">✅ 兑换结果</view>
+    <view class="result-row">
+      <text class="lbl">类型:</text>
+      <text class="val">{{resolved.scope_type == 'team' ? '跑团' : '约跑活动'}}</text>
+    </view>
+    <view class="result-row">
+      <text class="lbl">名称:</text>
+      <text class="val">{{resolved.scope_name || resolved.scope_id}}</text>
+    </view>
+    <view class="result-row">
+      <text class="lbl">使用情况:</text>
+      <text class="val">{{resolved.used}}/{{resolved.max}}</text>
+    </view>
+    <view class="result-row" wx:if="{{resolved.expires_at || resolved.expiresAt}}">
+      <text class="lbl">有效期至:</text>
+      <text class="val">{{resolved.expires_at || resolved.expiresAt}}</text>
+    </view>
+    <view wx:if="{{resolved.joined}}" class="success-tip">🎉 已自动加入,跳转中...</view>
+    <view wx:else class="warn-tip">⚠ 已兑换但自动加入失败({{resolved.join_warning || '请手动加入'}})</view>
+
+    <view class="result-actions">
+      <view class="btn btn-ghost" bindtap="onReset">重新输入</view>
+      <view class="btn btn-primary" bindtap="goToScope">查看详情</view>
+    </view>
+  </view>
+
+  <view class="footer-tip">💡 邀请码可从 跑团详情 / 约跑详情 页面右上角生成</view>
+</view>

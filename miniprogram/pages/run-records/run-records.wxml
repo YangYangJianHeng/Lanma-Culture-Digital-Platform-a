@@ -1,0 +1,108 @@
+<view class="page">
+  <view class="stats-card">
+    <view class="stat">
+      <view class="stat-num">{{stats.total_km}}</view>
+      <view class="stat-label">累计 km</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.week_km}}</view>
+      <view class="stat-label">本周 km</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.total_runs}}</view>
+      <view class="stat-label">跑步次数</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{activeTab == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{items.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">🏃</view>
+    <view class="empty-text">{{activeTab == 'mine' ? '还没有跑步记录' : '广场暂无记录'}}</view>
+    <view wx:if="{{activeTab == 'mine'}}" class="empty-tip">点击右下角 ＋ 同步你的第一次跑步</view>
+  </view>
+
+  <view wx:for="{{items}}" wx:key="id" class="record-card">
+    <view class="record-head">
+      <view>
+        <view class="record-title">{{item.title || '跑步记录'}}</view>
+        <view class="record-meta">{{formatDateTime(item.startedAt || item.started_at || item.createdAt)}}</view>
+      </view>
+      <view wx:if="{{activeTab == 'mine'}}" class="record-del" data-id="{{item.id}}" catchtap="onDelete">删除</view>
+    </view>
+    <view class="record-stats">
+      <view class="stat-block">
+        <view class="num">{{item.distanceKm || item.distance_km}}</view>
+        <view class="lbl">公里</view>
+      </view>
+      <view class="stat-block">
+        <view class="num">{{formatPace(item.avgPaceSecPerKm || item.avg_pace_sec_per_km)}}</view>
+        <view class="lbl">配速</view>
+      </view>
+      <view class="stat-block">
+        <view class="num">{{Math.round((item.durationSec || item.duration_sec || 0) / 60)}}</view>
+        <view class="lbl">分钟</view>
+      </view>
+    </view>
+    <view wx:if="{{item.startLocationText || item.start_location_text}}" class="record-loc">📍 {{item.startLocationText || item.start_location_text}}</view>
+    <view wx:if="{{item.note}}" class="record-note">{{item.note}}</view>
+    <view class="record-stats2">
+      <text wx:if="{{item.weather}}">☀️ {{item.weather}}</text>
+      <text wx:if="{{item.isPublic === false || item.is_public === false}}">🔒 私密</text>
+      <text wx:if="{{item.likeCount || item.like_count}}">❤️ {{item.likeCount || item.like_count}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{finished && items.length > 0}}" class="loading">— 没有更多了 —</view>
+
+  <view class="fab" bindtap="openSheet" hover-class="fab-hover">＋</view>
+
+  <!-- 新记录表单弹窗 -->
+  <view wx:if="{{sheetOpen}}" class="sheet-mask" bindtap="closeSheet">
+    <view class="sheet" catchtap="">
+      <view class="sheet-title">🏃 同步跑步记录</view>
+
+      <view class="form-row">
+        <view class="form-label">距离(km)<text class="required">*</text></view>
+        <input class="form-input" type="digit" data-field="distanceKm" value="{{recordForm.distanceKm}}" placeholder="例:5.2" bindinput="onRecordInput" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">时长(分)<text class="required">*</text></view>
+        <input class="form-input" type="number" data-field="durationMin" value="{{recordForm.durationMin}}" placeholder="例:30" bindinput="onRecordInput" />
+      </view>
+
+      <view class="form-row" bindtap="onChooseRecordLocation">
+        <view class="form-label">起点</view>
+        <view class="form-value {{recordForm.startLocationText ? '' : 'placeholder'}}">{{recordForm.startLocationText || '点击选择位置'}}</view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">标题</view>
+        <input class="form-input" data-field="title" value="{{recordForm.title}}" placeholder="可选" bindinput="onRecordInput" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">感受</view>
+        <input class="form-input" data-field="note" value="{{recordForm.note}}" placeholder="可选" bindinput="onRecordInput" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-label">天气</view>
+        <input class="form-input" data-field="weather" value="{{recordForm.weather}}" placeholder="例:晴/多云" bindinput="onRecordInput" />
+      </view>
+
+      <view class="sheet-actions">
+        <view class="btn btn-ghost" bindtap="closeSheet">取消</view>
+        <view class="btn btn-primary {{submitting ? 'btn-disabled' : ''}}" bindtap="onSubmitRecord">{{submitting ? '同步中...' : '同步'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

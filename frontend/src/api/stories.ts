@@ -55,7 +55,7 @@ export const storyApi = {
     request.delete<{ code: number; message: string }>(`/stories/${id}`),
 
   myStories: (params?: { page?: number }) =>
-    request.get<{ code: number; data: PaginatedResult<StoryItem> }>('/my-stories', { params }),
+    request.get<{ code: number; data: PaginatedResult<StoryItem> }>('/stories/my', { params }),
 
   toggleLike: (id: number) =>
     request.post<{ code: number; data: { liked: boolean; likes_count: number } }>(`/stories/${id}/like`),

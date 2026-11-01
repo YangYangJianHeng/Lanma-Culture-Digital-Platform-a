@@ -1,0 +1,72 @@
+<view class="page" wx:if="{{story}}">
+  <view class="header card">
+    <view class="head">
+      <image wx:if="{{story.author && story.author.avatar_url}}" src="{{story.author.avatar_url}}" class="avatar" mode="aspectFill"></image>
+      <view wx:else class="avatar avatar-fallback">{{(story.author && story.author.username && story.author.username[0]) || '?'}}</view>
+      <view class="meta">
+        <view class="author">{{(story.author && story.author.username) || '匿名'}}</view>
+        <view class="text-muted text-small">{{story.createdText}} · {{story.race_year}}年</view>
+      </view>
+      <view class="head-actions">
+        <view class="icon-btn" bindtap="onCopyTitle" hover-class="btn-hover">📋</view>
+        <view class="icon-btn" bindtap="onReport" hover-class="btn-hover">⚠️</view>
+      </view>
+    </view>
+
+    <view class="title">{{story.title}}</view>
+    <view class="content">{{story.content}}</view>
+
+    <view wx:if="{{story.images && story.images.length}}" class="images">
+      <image wx:for="{{story.images}}" wx:key="*this" src="{{item}}" class="story-img" mode="aspectFill"
+             data-url="{{item}}" data-all="{{story.images}}" bindtap="onPreviewImage"></image>
+    </view>
+
+    <view class="info">
+      <view wx:if="{{story.bib_number}}" class="tag">号码布 #{{story.bib_number}}</view>
+      <view wx:if="{{story.finish_time}}" class="tag">完赛 {{story.finish_time}}</view>
+    </view>
+
+    <view class="actions">
+      <view class="action-btn {{liked ? 'liked' : ''}}" bindtap="onLikesToggle" hover-class="btn-hover">
+        <text class="ico">{{liked ? '❤️' : '🤍'}}</text>
+        <text>{{liked ? '已点赞' : '点赞'}} · {{likesCount}}</text>
+      </view>
+      <button class="action-btn share-btn" open-type="share" hover-class="btn-hover">
+        <text class="ico">🔗</text>
+        <text>分享</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 评论 -->
+  <view class="card">
+    <view class="card-title">
+      💬 评论 <text class="cmt-count">({{comments.length}})</text>
+    </view>
+    <view wx:if="{{comments.length === 0}}" class="empty">
+      <view class="empty-icon">💭</view>
+      <view>还没有评论，快来抢沙发~</view>
+    </view>
+    <view class="comment" wx:for="{{comments}}" wx:key="id"
+          data-idx="{{index}}" bindlongpress="onCommentLongPress" hover-class="comment-hover">
+      <image wx:if="{{item.avatar_url}}" src="{{item.avatar_url}}" class="c-avatar" mode="aspectFill"></image>
+      <view wx:else class="c-avatar c-fallback">{{item.username[0]}}</view>
+      <view class="c-body">
+        <view class="c-name">
+          {{item.username}}
+          <text wx:if="{{item.isMine}}" class="me-tag">我</text>
+        </view>
+        <view class="c-text">{{item.content}}</view>
+        <view class="c-time text-muted text-small">{{item.createdText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入栏 -->
+  <view class="composer">
+    <input class="composer-input" placeholder="说点什么..." value="{{commentText}}" bindinput="onCommentInput" confirm-type="send" bindconfirm="onSubmitComment" />
+    <view class="composer-btn {{commentText.length === 0 ? 'disabled' : ''}}" bindtap="onSubmitComment">{{submitting ? '发送中...' : '发送'}}</view>
+  </view>
+</view>
+
+<view wx:elif="{{!loading}}" class="empty" style="margin-top:160rpx;">未找到该故事</view>

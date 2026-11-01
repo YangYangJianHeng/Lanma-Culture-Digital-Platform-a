@@ -1,0 +1,124 @@
+<view class="page">
+  <!-- 顶部大标题 / 总数 -->
+  <view class="hero card">
+    <view class="hero-icon">🏛️</view>
+    <view class="hero-content">
+      <view class="hero-title">历届兰马时光轴</view>
+      <view class="hero-sub">自 2011 年起 · 见证 {{marathons.length}} 届赛事精彩瞬间</view>
+    </view>
+    <view class="hero-badge">{{marathons.length}}</view>
+  </view>
+
+  <view wx:if="{{marathons.length === 0 && !loading}}" class="empty-state">
+    <view class="empty-icon">📅</view>
+    <view class="empty-title">暂无赛事记录</view>
+  </view>
+
+  <!-- 时间轴 -->
+  <view class="timeline">
+    <view class="tl-row {{item.isLatest ? 'tl-row-latest' : ''}}" wx:for="{{marathons}}" wx:key="id"
+          data-id="{{item.id}}" bindtap="openDetail" hover-class="tl-hover">
+      <!-- 圆点+竖线 -->
+      <view class="tl-dot-col">
+        <view class="tl-dot"></view>
+        <view class="tl-line" wx:if="{{idx != marathons.length - 1}}"></view>
+      </view>
+
+      <!-- 卡片 -->
+      <view class="tl-card">
+        <view class="tl-head">
+          <text class="tl-year">{{item.year}}</text>
+          <text wx:if="{{item.isLatest}}" class="tl-flag">🔮 即将开赛</text>
+          <text wx:elif="{{item.isPast}}" class="tl-flag tl-flag-past">已完赛</text>
+          <text wx:else class="tl-flag tl-flag-now">进行中</text>
+        </view>
+
+        <view class="tl-title">{{item.name || (item.year + ' 兰州国际马拉松')}}</view>
+        <view wx:if="{{item.slogan}}" class="tl-slogan">"{{item.slogan}}"</view>
+
+        <view wx:if="{{item.imageArr}}" class="tl-cover">
+          <image src="{{item.imageArr}}" mode="aspectFill"></image>
+        </view>
+
+        <view class="tl-info">
+          <text wx:if="{{item.date}}">📅 {{item.date}}</text>
+          <text wx:if="{{item.location}}">📍 {{item.location}}</text>
+          <text wx:if="{{item.participantCount}}">👥 {{item.participantCount}} 人</text>
+        </view>
+
+        <view wx:if="{{item.description}}" class="tl-desc">{{item.description}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{detail}}" bindtap="closeDetail">
+    <view class="modal" catchtap="">
+      <view class="modal-banner" wx:if="{{detail.imageArr}}" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url({{detail.imageArr}});">
+        <view class="modal-banner-year">{{detail.year}}</view>
+      </view>
+      <view wx:else class="modal-banner modal-banner-empty">
+        <view class="modal-banner-year">{{detail.year}}</view>
+      </view>
+
+      <view class="modal-body">
+        <view class="modal-title">{{detail.name}}</view>
+        <view wx:if="{{detail.slogan}}" class="modal-slogan">"{{detail.slogan}}"</view>
+        <view class="modal-info">
+          <text wx:if="{{detail.date}}">📅 {{detail.date}}</text>
+          <text wx:if="{{detail.location}}">📍 {{detail.location}}</text>
+          <text wx:if="{{detail.participantCount}}">👥 {{detail.participantCount}} 人参赛</text>
+        </view>
+        <view wx:if="{{detail.description}}" class="modal-desc">{{detail.description}}</view>
+
+        <view wx:if="{{detail.images && detail.images.length}}" class="modal-images">
+          <image wx:for="{{detail.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="modal-img" catchtap="previewImage" data-url="{{item}}"></image>
+        </view>
+
+        <!-- 完赛证书 / 分享裂变 -->
+        <view class="modal-actions">
+          <button class="share-btn" open-type="share">
+            <text>🔗 分享好友</text>
+          </button>
+          <view class="cert-btn" catchtap="onGenerateCert" data-id="{{detail.id}}">🏅 生完赛证书</view>
+        </view>
+      </view>
+      <view class="modal-close" bindtap="closeDetail">关闭</view>
+    </view>
+  </view>
+
+  <!-- 完赛证书表单:填写姓名/项目/成绩 -->
+  <view class="cert-mask" wx:if="{{certForm}}" catchtap="closeCertForm">
+    <view class="cert-modal" catchtap="noop">
+      <view class="cert-title">🏅 生成完赛证书海报</view>
+      <view class="cert-sub text-muted">填写信息后将生成可分享到朋友圈的精美海报</view>
+
+      <view class="cert-field">
+        <view class="cert-label">姓名</view>
+        <input class="cert-input" type="text" placeholder="请输入跑者姓名" value="{{certForm.name}}" bindinput="onCertInput" data-field="name" />
+      </view>
+      <view class="cert-field">
+        <view class="cert-label">参赛项目</view>
+        <picker mode="selector" range="{{categoryOptions}}" range-key="label" value="{{certForm.catIndex}}" bindchange="onCertCatChange">
+          <view class="cert-input cert-picker">{{categoryOptions[certForm.catIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="cert-field">
+        <view class="cert-label">枪声成绩</view>
+        <input class="cert-input" type="text" placeholder="如 04:23:15" value="{{certForm.gun_time}}" bindinput="onCertInput" data-field="gun_time" />
+      </view>
+      <view class="cert-field">
+        <view class="cert-label">净成绩</view>
+        <input class="cert-input" type="text" placeholder="如 04:21:30" value="{{certForm.net_time}}" bindinput="onCertInput" data-field="net_time" />
+      </view>
+      <view class="cert-field">
+        <view class="cert-label">完赛号</view>
+        <input class="cert-input" type="text" placeholder="如 L24001" value="{{certForm.bib_no}}" bindinput="onCertInput" data-field="bib_no" />
+      </view>
+
+      <view class="cert-actions">
+        <view class="cert-cancel" catchtap="closeCertForm">取消</view>
+        <view class="cert-confirm" catchtap="onConfirmCert">生成海报</view>
+      </view>
+    </view>
+  </view>
+</view>

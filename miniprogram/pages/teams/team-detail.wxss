@@ -1,0 +1,284 @@
+.page {
+  padding: 0 0 80rpx;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+.hero {
+  background: linear-gradient(135deg, #b71c1c 0%, #f57c00 100%);
+  padding: 32rpx 24rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.hero-logo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 56rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+.hero-body { flex: 1; }
+.hero-name { font-size: 36rpx; font-weight: 700; }
+.hero-slogan { font-size: 24rpx; opacity: 0.85; margin-top: 4rpx; }
+.hero-meta {
+  font-size: 22rpx;
+  margin-top: 12rpx;
+  opacity: 0.9;
+}
+.hero-meta text { margin-right: 16rpx; }
+
+.action-row {
+  background: #fff;
+  display: flex;
+  gap: 12rpx;
+  padding: 16rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.btn {
+  flex: 1;
+  text-align: center;
+  font-size: 26rpx;
+  padding: 16rpx;
+  border-radius: 12rpx;
+}
+.btn-primary { background: #b71c1c; color: #fff; font-weight: 600; }
+.btn-warn { background: #fff3e0; color: #ef6c00; }
+.btn-ghost { background: #f5f5f5; color: #333; }
+.btn-sm { padding: 12rpx 24rpx; font-size: 24rpx; }
+
+.tabs {
+  white-space: nowrap;
+  background: #fff;
+}
+.tab {
+  display: inline-block;
+  padding: 24rpx 32rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+.tab.active {
+  color: #b71c1c;
+  border-bottom: 4rpx solid #b71c1c;
+  font-weight: 600;
+}
+
+.content { padding: 24rpx; }
+.section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.section-body {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.7;
+}
+.data-grid {
+  display: flex;
+  justify-content: space-around;
+}
+.data-cell { text-align: center; }
+.data-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #b71c1c;
+}
+.data-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+
+.invite-row {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: #fff5f5;
+  border-radius: 8rpx;
+  margin-bottom: 12rpx;
+}
+.invite-code {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #b71c1c;
+  font-family: monospace;
+  margin-right: 16rpx;
+  flex: 1;
+}
+.invite-meta { font-size: 22rpx; color: #999; }
+.invite-create {
+  font-size: 24rpx;
+  color: #b71c1c;
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  background: #fff5f5;
+}
+
+.dynamic-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+.dynamic-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #ffcdd2;
+  color: #b71c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-right: 16rpx;
+}
+.dynamic-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+.dynamic-meta {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+.dynamic-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+.dynamic-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+.dynamic-tag {
+  display: inline-block;
+  font-size: 22rpx;
+  background: #fff3e0;
+  color: #ef6c00;
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  margin-top: 12rpx;
+}
+.dynamic-actions {
+  margin-top: 16rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+.action-item {
+  font-size: 24rpx;
+  color: #999;
+  margin-right: 24rpx;
+}
+
+.challenge-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+.challenge-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+.challenge-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+.status-pill {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+.status-ongoing { background: #e8f5e9; color: #2e7d32; }
+.status-finished { background: #f5f5f5; color: #999; }
+.status-cancelled { background: #ffebee; color: #c62828; }
+.challenge-info {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+.challenge-desc {
+  font-size: 24rpx;
+  color: #888;
+  margin: 8rpx 0;
+}
+.challenge-reward {
+  font-size: 24rpx;
+  color: #ef6c00;
+  background: #fff8e1;
+  padding: 8rpx 12rpx;
+  border-radius: 6rpx;
+  margin-top: 12rpx;
+}
+.challenge-actions { margin-top: 16rpx; }
+
+.member-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+}
+.member-info { flex: 1; }
+.member-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+.member-meta {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+.member-meta text { margin-right: 16rpx; }
+.role-leader { color: #b71c1c; font-weight: 600; }
+.role-vice_leader { color: #ef6c00; }
+
+.empty {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  color: #999;
+}
+.empty-icon { font-size: 96rpx; }
+.empty-text { font-size: 28rpx; margin-top: 16rpx; }
+.empty-tip { font-size: 24rpx; color: #999; text-align: center; padding: 20rpx 0; }
+
+.loading {
+  text-align: center;
+  padding: 80rpx;
+  color: #999;
+  font-size: 26rpx;
+}

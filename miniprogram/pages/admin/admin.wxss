@@ -1,0 +1,108 @@
+.admin-page {
+  padding: 24rpx 24rpx 60rpx;
+  color: #e5e5e5;
+}
+
+.hero {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 16rpx;
+  padding: 32rpx 24rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #333;
+}
+.hero-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffd76e;
+}
+.hero-sub {
+  font-size: 24rpx;
+  color: #aaa;
+  margin-top: 8rpx;
+}
+.hero-sync {
+  font-size: 22rpx;
+  color: #777;
+  margin-top: 16rpx;
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+.stat-card {
+  background: #1c1c1c;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  border: 1rpx solid #2c2c2c;
+}
+.stat-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16rpx;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8rpx 0;
+  font-size: 26rpx;
+}
+.stat-row .lbl { color: #aaa; }
+.stat-row .val { color: #fff; font-weight: 600; }
+.stat-row.pending .val { color: #ffd76e; }
+.stat-row.ok .val { color: #6dd47e; }
+.stat-row.bad .val { color: #ff7676; }
+
+.quick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+.quick-item {
+  background: #1c1c1c;
+  border: 1rpx solid #2c2c2c;
+  border-radius: 12rpx;
+  padding: 28rpx 20rpx;
+  text-align: center;
+}
+.quick-hover {
+  background: #252525;
+  transform: scale(0.98);
+}
+.quick-icon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
+}
+.quick-name {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 600;
+}
+.quick-desc {
+  font-size: 22rpx;
+  color: #888;
+  margin-top: 6rpx;
+}
+
+.footer-tip {
+  text-align: center;
+  font-size: 22rpx;
+  color: #666;
+  margin-top: 40rpx;
+}
+
+.no-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200rpx 60rpx;
+  color: #aaa;
+}
+.no-auth-icon { font-size: 96rpx; }
+.no-auth-title { font-size: 36rpx; color: #fff; margin-top: 20rpx; font-weight: 600; }
+.no-auth-sub { font-size: 26rpx; margin-top: 12rpx; text-align: center; }
+.no-auth-current { font-size: 24rpx; margin-top: 20rpx; color: #888; }

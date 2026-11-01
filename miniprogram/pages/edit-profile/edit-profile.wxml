@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="form-card">
+    <view class="form-row center">
+      <view class="avatar-edit" bindtap="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" class="avatar-img" mode="aspectFill"></image>
+        <view wx:else class="avatar-img avatar-fallback">点击上传</view>
+        <view class="camera-tag">📷</view>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">用户名</text>
+      <input class="form-input" placeholder="用户名" data-field="username" bindinput="onFieldInput" value="{{form.username}}" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">邮箱</text>
+      <input class="form-input" disabled value="{{form.email}}" placeholder="不可修改" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">职业</text>
+      <input class="form-input" placeholder="如：程序员 / 设计师" data-field="occupation" bindinput="onFieldInput" value="{{form.occupation}}" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">年龄</text>
+      <input class="form-input" type="number" placeholder="选填" data-field="age" bindinput="onFieldInput" value="{{form.age}}" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">性别</text>
+      <radio-group class="radio-group" bindchange="onGenderChange">
+        <label class="radio-item"><radio value="male" checked="{{form.gender == 'male'}}" color="#b71c1c"/>男</label>
+        <label class="radio-item"><radio value="female" checked="{{form.gender == 'female'}}" color="#b71c1c"/>女</label>
+        <label class="radio-item"><radio value="unknown" checked="{{form.gender == 'unknown' || !form.gender}}" color="#b71c1c"/>保密</label>
+      </radio-group>
+    </view>
+
+    <button class="btn-primary" bindtap="onSubmit" disabled="{{submitting}}" style="margin-top: 32rpx;">
+      {{submitting ? '保存中...' : '保 存'}}
+    </button>
+  </view>
+</view>

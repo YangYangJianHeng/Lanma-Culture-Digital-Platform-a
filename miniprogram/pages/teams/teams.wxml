@@ -1,0 +1,64 @@
+<view class="page">
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{activeTab == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <view class="quick-bar">
+    <view class="quick-btn" bindtap="goCreate" hover-class="quick-hover">
+      <text class="quick-icon">＋</text>创建跑团
+    </view>
+    <view class="quick-btn quick-btn-ghost" bindtap="goInvite" hover-class="quick-hover">
+      <text class="quick-icon">🔗</text>输入邀请码
+    </view>
+  </view>
+
+  <!-- 列表模式 -->
+  <view wx:if="{{activeTab != 'ranking' && items.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">👥</view>
+    <view class="empty-text">暂无{{activeTab == 'mine' ? '已加入' : '跑团'}}</view>
+  </view>
+
+  <view wx:if="{{activeTab != 'ranking'}}" wx:for="{{items}}" wx:key="id" class="team-card" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="team-logo">
+      {{(item.name || '跑').slice(0, 1)}}
+    </view>
+    <view class="team-body">
+      <view class="team-name">{{item.name}}</view>
+      <view class="team-slogan">{{item.slogan || '一起跑,跑更远'}}</view>
+      <view class="team-meta">
+        <text>📍 {{item.city || '未填写'}}</text>
+        <text>👥 {{item.memberCount || item.member_count || 0}}人</text>
+        <text>🏃 {{item.totalDistanceKm || item.total_distance_km || 0}}km</text>
+      </view>
+    </view>
+    <view wx:if="{{item.status == 'pending'}}" class="status-pill pending">待审核</view>
+    <view wx:elif="{{item.status == 'rejected'}}" class="status-pill rejected">已驳回</view>
+    <view wx:elif="{{item.status == 'disbanded'}}" class="status-pill disbanded">已解散</view>
+    <view wx:else class="status-pill ok">已成立</view>
+  </view>
+
+  <!-- 排行榜模式 -->
+  <view wx:if="{{activeTab == 'ranking' && ranking.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">🏆</view>
+    <view class="empty-text">暂无排行数据</view>
+  </view>
+
+  <view wx:if="{{activeTab == 'ranking'}}" wx:for="{{ranking}}" wx:key="teamId || id" class="rank-row" data-id="{{item.teamId || item.id}}" bindtap="goDynamic">
+    <view class="rank-no rank-{{index < 3 ? 'top' : 'normal'}}">{{index + 1}}</view>
+    <view class="rank-body">
+      <view class="rank-name">{{item.name}}</view>
+      <view class="rank-sub">{{item.city || '未填写'}} · {{item.memberCount || 0}}人 · {{item.totalDistanceKm || 0}}km</view>
+    </view>
+    <view class="rank-score">
+      <view class="score-num">{{item.score}}</view>
+      <view class="score-label">分</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{finished && items.length > 0 && activeTab != 'ranking'}}" class="loading">— 没有更多了 —</view>
+</view>

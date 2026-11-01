@@ -1,0 +1,146 @@
+<view class="page">
+  <view class="search-row">
+    <input class="search-input" placeholder="输入城市名(如 兰州)" value="{{location}}" bindinput="onChangeLocation" bindconfirm="onConfirmLocation" />
+    <view class="search-btn" bindtap="onConfirmLocation" hover-class="btn-hover">查询</view>
+  </view>
+
+  <!-- 顶部 hero 大卡 -->
+  <view class="hero card" wx:if="{{now}}">
+    <view class="hero-row">
+      <view class="hero-loc">{{location}}</view>
+      <view class="hero-update">{{now.recordTime || now.record_time || now.observed_at || updateTime}}</view>
+    </view>
+
+    <view class="hero-main">
+      <view class="hero-temp">
+        <text class="hero-temp-num">{{now.temperature || now.temperature_min || '--'}}</text>
+        <text class="hero-temp-unit">°</text>
+      </view>
+      <view class="hero-icon">{{weatherIcon}}</view>
+    </view>
+
+    <view class="hero-desc">{{now.weatherCondition || weatherDesc}}</view>
+
+    <view class="hero-extra">
+      <text wx:if="{{now.feelsLike || now.feels_like}}">体感 {{now.feelsLike || now.feels_like}}°</text>
+      <text wx:if="{{now.aqi || now.airQuality}}">· AQI {{now.aqi || now.airQuality}}</text>
+      <text wx:if="{{now.humidity}}">· 湿度 {{now.humidity}}%</text>
+    </view>
+
+    <view class="hero-grid">
+      <view class="hero-cell" wx:if="{{sunriseSunset.sunrise}}">
+        <text class="cell-icon">🌅</text>
+        <text class="cell-key">日出</text>
+        <text class="cell-val">{{sunriseSunset.sunrise}}</text>
+      </view>
+      <view class="hero-cell" wx:if="{{sunriseSunset.sunset}}">
+        <text class="cell-icon">🌇</text>
+        <text class="cell-key">日落</text>
+        <text class="cell-val">{{sunriseSunset.sunset}}</text>
+      </view>
+      <view class="hero-cell">
+        <text class="cell-icon">💨</text>
+        <text class="cell-key">风速</text>
+        <text class="cell-val">{{now.windSpeed || now.wind_speed || '--'}} m/s</text>
+      </view>
+      <view class="hero-cell">
+        <text class="cell-icon">🧭</text>
+        <text class="cell-key">风向</text>
+        <text class="cell-val">{{now.windDirection || now.wind_direction || '--'}}</text>
+      </view>
+      <view class="hero-cell">
+        <text class="cell-icon">🔆</text>
+        <text class="cell-key">紫外线</text>
+        <text class="cell-val">{{uviLabel}}</text>
+      </view>
+      <view class="hero-cell">
+        <text class="cell-icon">🌡</text>
+        <text class="cell-key">气压</text>
+        <text class="cell-val">{{now.pressure || '--'}} hPa</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 24h 趋势图 -->
+  <view class="card" wx:if="{{trend.points.length}}">
+    <view class="card-title-row">
+      <text class="card-title">📈 24 小时温度趋势</text>
+      <text class="text-muted text-small">高温 {{trend.maxTemp}}° · 低温 {{trend.minTemp}}°</text>
+    </view>
+    <view class="chart-wrap">
+      <view class="chart-grid"></view>
+      <view class="chart-row">
+        <view class="chart-y-axis">
+          <text wx:for="{{trend.yLabels}}" wx:key="*this" class="chart-y-label">{{item}}°</text>
+        </view>
+        <scroll-view scroll-x class="chart-scroll" enable-flex show-scrollbar="{{false}}">
+          <view class="chart-bars">
+            <view class="chart-bar-col" wx:for="{{trend.points}}" wx:key="idx" wx:for-index="idx" wx:for-item="pt">
+              <view class="chart-temp-label">{{pt.temp}}°</view>
+              <view class="chart-bar"
+                    style="height: {{pt.heightPct}}%; background: linear-gradient(180deg, {{pt.color1}}, {{pt.color2}});">
+                <text class="chart-bar-icon">{{pt.icon}}</text>
+              </view>
+              <view class="chart-hour">{{pt.hourLabel}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未来几天 -->
+  <view class="card" wx:if="{{forecast.length}}">
+    <view class="card-title">📅 未来 {{forecast.length}} 天预报</view>
+    <view class="forecast">
+      <view class="fc-item" wx:for="{{forecast}}" wx:key="idx" wx:for-index="idx" wx:for-item="f">
+        <view class="fc-date">
+          <text wx:if="{{idx === 0}}">今天</text>
+          <text wx:elif="{{idx === 1}}">明天</text>
+          <text wx:else>{{f.dayLabel}}</text>
+        </view>
+        <view class="fc-icon">{{f.icon}}</view>
+        <view class="fc-desc">{{f.weatherCondition || f.weather || f.description || ''}}</view>
+        <view class="fc-temp">
+          <text class="fc-temp-low">{{f.tempMin || f.temperature_min || '--'}}°</text>
+          <text class="fc-temp-bar"><text class="fc-temp-bar-inner" style="left:{{f.lowPct}}%; right:{{100 - f.highPct}}%"></text></text>
+          <text class="fc-temp-high">{{f.tempMax || f.temperature_max || '--'}}°</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 跑步建议 -->
+  <view class="card" wx:if="{{runningAdvice}}">
+    <view class="card-title">🏃 跑步建议</view>
+    <view class="advice-row">
+      <view class="advice-score" style="background: linear-gradient(135deg, {{runningAdvice.color1}}, {{runningAdvice.color2}});">
+        <view class="advice-score-num">{{runningAdvice.score}}</view>
+        <view class="advice-score-label">{{runningAdvice.level}}</view>
+      </view>
+      <view class="advice-text">
+        <view class="advice-line">{{runningAdvice.main}}</view>
+        <view class="advice-sub text-muted">{{runningAdvice.sub}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近 7 天历史 -->
+  <view class="card" wx:if="{{history.length}">
+    <view class="card-title">📊 近 7 天历史</view>
+    <view class="forecast">
+      <view class="fc-item" wx:for="{{history}}" wx:key="*this">
+        <view class="fc-date">{{item.dayLabel}}</view>
+        <view class="fc-icon">{{item.icon}}</view>
+        <view class="fc-desc">{{item.weatherCondition || item.weather || item.description || ''}}</view>
+        <view class="fc-temp">
+          <text class="fc-temp-low">{{item.tempMin || item.temperature_min || '--'}}°</text>
+          <text class="fc-temp-bar"><text class="fc-temp-bar-inner" style="left:{{item.lowPct}}%; right:{{100 - item.highPct}}%"></text></text>
+          <text class="fc-temp-high">{{item.tempMax || item.temperature_max || '--'}}°</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="text-muted text-small update">更新时间：{{updateTime}}</view>
+</view>

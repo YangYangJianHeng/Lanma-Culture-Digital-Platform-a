@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="form-card">
+    <view class="form-row">
+      <view class="form-label">团名<text class="required">*</text></view>
+      <input class="form-input" data-field="name" value="{{form.name}}" maxlength="20" placeholder="例:兰州黄河跑团" bindinput="onInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">口号</view>
+      <input class="form-input" data-field="slogan" value="{{form.slogan}}" maxlength="30" placeholder="一句话介绍" bindinput="onInput" />
+    </view>
+
+    <view class="form-row" bindtap="onChooseCity">
+      <view class="form-label">城市</view>
+      <view class="form-value">{{form.city}}</view>
+    </view>
+
+    <view class="form-row" bindtap="onChooseBaseLocation">
+      <view class="form-label">主基地</view>
+      <view class="form-value {{form.baseLocation ? '' : 'placeholder'}}">{{form.baseLocation || '点击选择常聚点'}}</view>
+    </view>
+
+    <view class="form-row form-row-multi">
+      <view class="form-label">跑团介绍</view>
+      <textarea class="form-textarea" data-field="description" value="{{form.description}}" maxlength="500" placeholder="介绍跑团文化、训练特色等" bindinput="onInput" auto-height />
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <view class="submit-btn {{submitting ? 'btn-disabled' : ''}}" bindtap="onSubmit">{{submitting ? '提交中...' : '创建跑团(待审核)'}}</view>
+  </view>
+</view>

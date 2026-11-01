@@ -1,0 +1,123 @@
+<view class="page">
+  <!-- 顶部工具栏 -->
+  <view class="topbar">
+    <view class="model-chip" bindtap="onModelTap">
+      <text class="dot"></text>
+      <text>{{models[modelIndex].label}}</text>
+      <text class="caret">▾</text>
+    </view>
+    <view class="topbar-actions">
+      <view class="icon-btn" bindtap="onOpenDrawer" hover-class="btn-hover">💬</view>
+      <view class="icon-btn" bindtap="onNewChat" hover-class="btn-hover">➕</view>
+      <view class="icon-btn" bindtap="onClearHistory" hover-class="btn-hover">🗑</view>
+      <view class="icon-btn" bindtap="onAbout" hover-class="btn-hover">ℹ️</view>
+    </view>
+  </view>
+
+  <!-- 当前会话标题 -->
+  <view class="session-title" wx:if="{{sessionList.length}}">
+    <text class="session-count">共 {{sessionList.length}} 个会话，点击 💬 查看</text>
+  </view>
+
+  <!-- 模型选择弹层 -->
+  <view class="model-picker-mask" wx:if="{{showModelPicker}}" bindtap="onCloseModelPicker">
+    <view class="model-picker" catchtap="">
+      <view class="mp-title">选择模型</view>
+      <view class="mp-item {{item.key == currentModel ? 'active' : ''}}"
+            wx:for="{{models}}" wx:key="key"
+            data-idx="{{index}}" bindtap="onModelSelect">
+        <text class="mp-dot"></text>
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会话列表抽屉 -->
+  <view class="drawer-mask" wx:if="{{showDrawer}}" bindtap="onCloseDrawer">
+    <view class="drawer" catchtap="">
+      <view class="drawer-head">
+        <text class="drawer-title">💬 对话列表</text>
+        <view class="drawer-new" bindtap="onNewSession" hover-class="btn-hover">+ 新建</view>
+      </view>
+      <scroll-view scroll-y class="drawer-scroll" enhanced show-scrollbar="{{false}}">
+        <view class="sess {{item.id == activeSessionId ? 'active' : ''}}"
+              wx:for="{{sessionList}}" wx:key="id"
+              data-id="{{item.id}}" bindtap="onSelectSession" hover-class="sess-hover">
+          <view class="sess-body">
+            <view class="sess-title">
+              <text wx:if="{{item.id == activeSessionId}}" class="sess-flag">●</text>
+              {{item.title}}
+            </view>
+            <view class="sess-meta text-muted text-small">
+              {{item.count}} 条消息 · {{item.updatedAtText}}
+            </view>
+          </view>
+          <view class="sess-actions">
+            <text class="sess-act" catchtap="onRenameSession" data-id="{{item.id}}">✏️</text>
+            <text class="sess-act sess-act-del" catchtap="onDeleteSession" data-id="{{item.id}}">🗑</text>
+          </view>
+        </view>
+        <view wx:if="{{!sessionList.length}}" class="empty">暂无对话</view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 重命名弹层 -->
+  <view class="rename-mask" wx:if="{{showRename}}" bindtap="onRenameCancel">
+    <view class="rename-box" catchtap="">
+      <view class="rename-title">重命名会话</view>
+      <input class="rename-input" value="{{renameValue}}" bindinput="onRenameInput" maxlength="20" placeholder="输入会话标题" focus="{{true}}" />
+      <view class="rename-actions">
+        <view class="rename-cancel" bindtap="onRenameCancel" hover-class="btn-hover">取消</view>
+        <view class="rename-ok" bindtap="onRenameConfirm" hover-class="btn-hover">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="chat-scroll" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation enhanced show-scrollbar="{{false}}">
+    <view id="{{'msg-' + index}}" class="msg-row {{item.role == 'user' ? 'row-right' : 'row-left'}}"
+          wx:for="{{messages}}" wx:key="id"
+          data-idx="{{index}}" bindlongpress="onMsgLongPress">
+      <view class="avatar {{item.role === 'user' ? 'avatar-user' : 'avatar-ai'}}">{{item.role === 'user' ? '我' : '兰'}}</view>
+      <view class="bubble-wrap">
+        <view class="bubble {{item.role === 'user' ? 'bubble-user' : 'bubble-ai'}}">
+          <text user-select="true" space="nbsp" decode="{{true}}">{{item.content}}</text>
+        </view>
+        <view class="bubble-foot">
+          <text class="bubble-time" wx:if="{{item.time}}">{{item.time}}</text>
+          <text wx:if="{{item.source && item.source.indexOf('ollama') >= 0}}" class="src-tag src-ollama">🦙 本地模型</text>
+          <text wx:elif="{{item.source === 'fallback'}}" class="src-tag src-fallback">💡 兜底回复</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{sending}}" class="msg-row row-left" id="msg-typing">
+      <view class="avatar avatar-ai">兰</view>
+      <view class="bubble-wrap">
+        <view class="bubble bubble-ai">
+          <view class="dots"><view class="dot"></view><view class="dot"></view><view class="dot"></view></view>
+        </view>
+        <view class="bubble-foot"><text class="bubble-time">小兰正在思考…</text></view>
+      </view>
+    </view>
+
+    <view style="height: 40rpx;"></view>
+  </scroll-view>
+
+  <view class="composer">
+    <scroll-view scroll-x class="quick-row" enable-flex show-scrollbar="{{false}}">
+      <view class="quick-chip" wx:for="{{quickPrompts}}" wx:key="q"
+            data-q="{{item.q}}" bindtap="onQuickTap">
+        {{item.icon}} {{item.label}}
+      </view>
+    </scroll-view>
+
+    <view class="input-row">
+      <textarea class="input" auto-height="{{true}}" show-confirm-bar="{{false}}" placeholder="说点什么..."
+                value="{{query}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
+                bindconfirm="onSend" maxlength="500" cursor-spacing="20" adjust-position="{{true}}" />
+      <view class="send-btn {{query.length === 0 ? 'send-disabled' : ''}}" bindtap="onSend">{{sending ? '...' : '发送'}}</view>
+    </view>
+    <view class="hint text-muted" wx:if="{{!historyLoaded}}">正在加载历史…</view>
+  </view>
+</view>

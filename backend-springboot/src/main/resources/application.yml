@@ -44,6 +44,18 @@ app:
   upload:
     dir: ./uploads
 
+  # 微信小程序 - 一键登录(留空则走本地稳定哈希降级方案)
+  weixin:
+    appid: ${WX_APPID:}
+    secret: ${WX_SECRET:}
+
+  # 团队排行榜权重(管理侧在 /api/v1/admin/social/teams/ranking/config 读取)
+  team-ranking:
+    weight-distance: 1.0       # 跑量权重(每公里)
+    weight-pace: 5.0           # 配速权重(越快得分越高)
+    weight-members: 100.0      # 人数权重(每个团员)
+    default-limit: 20          # 排行榜默认显示条数
+
   weather:
     api-key: uapi-jxzhwajxL48lb_ZMfJamSWyN59WkSpuBN8a64XiF
     api-url: https://uapis.cn/api/v1/misc/weather

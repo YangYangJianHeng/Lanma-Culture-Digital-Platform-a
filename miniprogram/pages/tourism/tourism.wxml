@@ -1,0 +1,78 @@
+<view class="page">
+  <view class="cat-row-wrap">
+    <scroll-view scroll-x class="cat-row" enable-flex show-scrollbar="{{false}}">
+      <view class="cat-chip {{item == activeCat ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this"
+            data-cat="{{item}}" bindtap="onCatTap">{{item}}</view>
+    </scroll-view>
+    <view class="fav-btn {{showFavOnly ? 'active' : ''}}" bindtap="onToggleFavFilter">⭐ 收藏</view>
+  </view>
+
+  <view wx:if="{{spots.length === 0 && !loading}}" class="empty">
+    <view class="empty-icon">🏯</view>
+    <view>{{showFavOnly ? '还没有收藏的景点' : '暂无景点'}}</view>
+  </view>
+
+  <view class="spots">
+    <view class="spot-card card" wx:for="{{spots}}" wx:key="id"
+          data-id="{{item.id}}" data-lat="{{item.latitude}}" data-lng="{{item.longitude}}" data-name="{{item.name}}"
+          bindtap="openDetail" hover-class="card-hover">
+      <image wx:if="{{item.image_url}}" src="{{item.image_url}}" class="spot-img" mode="aspectFill"></image>
+      <view wx:else class="spot-img fallback">🏯</view>
+      <view class="spot-body">
+        <view class="spot-name">{{item.name}}</view>
+        <view class="spot-meta">
+          <text class="tag">{{item.category}}</text>
+          <text wx:if="{{item.rating}}" class="text-small" style="color:#f57c00;">⭐ {{item.rating}}</text>
+        </view>
+        <view class="spot-desc">{{item.description}}</view>
+        <view class="spot-foot">
+          <text wx:if="{{item.address}}" class="text-muted text-small">📍 {{item.address}}</text>
+          <view wx:if="{{item.latitude && item.longitude}}" class="map-btn"
+                catchtap="openMap" data-lat="{{item.latitude}}" data-lng="{{item.longitude}}" data-name="{{item.name}}">
+            导航
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{detail}}" bindtap="closeDetail">
+    <view class="modal" catchtap="noop">
+      <image wx:if="{{detail.image_url}}" src="{{detail.image_url}}" class="modal-img" mode="aspectFill"></image>
+      <view wx:else class="modal-img fallback">🏯</view>
+      <view class="modal-body">
+        <view class="modal-title">{{detail.name}}</view>
+        <view class="modal-meta">
+          <text class="tag">{{detail.category}}</text>
+          <text wx:if="{{detail.rating}}" class="text-small" style="color:#f57c00;">⭐ {{detail.rating}}</text>
+        </view>
+        <view wx:if="{{detail.address}}" class="text-muted text-small addr">📍 {{detail.address}}</view>
+        <view wx:if="{{detail.opening_hours}}" class="text-muted text-small">🕐 {{detail.opening_hours}}</view>
+        <view wx:if="{{detail.ticket_price}}" class="text-muted text-small">🎫 {{detail.ticket_price}}</view>
+        <view class="modal-desc">{{detail.description}}</view>
+        <view wx:if="{{detail.ai_analysis}}" class="modal-section">
+          <view class="modal-section-title">🤖 AI 解读</view>
+          <view class="modal-section-body">{{detail.ai_analysis}}</view>
+        </view>
+        <view wx:if="{{detail.tips}}" class="modal-section">
+          <view class="modal-section-title">💡 游玩提示</view>
+          <view class="modal-section-body">{{detail.tips}}</view>
+        </view>
+
+        <view class="modal-actions">
+          <view wx:if="{{detail.latitude && detail.longitude}}"
+                class="action-map" catchtap="openMap" data-lat="{{detail.latitude}}" data-lng="{{detail.longitude}}" data-name="{{detail.name}}">
+            🧭 一键导航
+          </view>
+          <view class="fav-toggle {{detailFav ? 'active' : ''}}" catchtap="onToggleFav" data-id="{{detail.id}}">
+            {{detailFav ? '★ 已收藏' : '☆ 收藏'}}
+          </view>
+        </view>
+        <button class="share-btn" open-type="share">
+          <text>🔗 分享景点</text>
+        </button>
+        <view class="modal-close" bindtap="closeDetail">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

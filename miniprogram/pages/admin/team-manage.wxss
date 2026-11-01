@@ -1,0 +1,97 @@
+.page {
+  padding: 24rpx;
+  background: #0f0f0f;
+  min-height: 100vh;
+  color: #e5e5e5;
+}
+.tabs {
+  white-space: nowrap;
+  margin-bottom: 24rpx;
+  border-bottom: 1rpx solid #2a2a2a;
+}
+.tab {
+  display: inline-block;
+  padding: 18rpx 30rpx;
+  font-size: 28rpx;
+  color: #888;
+}
+.tab.active {
+  color: #ffd76e;
+  border-bottom: 4rpx solid #ffd76e;
+}
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #777;
+}
+.empty-icon { font-size: 96rpx; }
+.empty-text { font-size: 28rpx; margin-top: 20rpx; }
+
+.card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #2a2a2a;
+}
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+.title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+  flex: 1;
+  padding-right: 12rpx;
+}
+.status {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  flex-shrink: 0;
+}
+.status-pending { background: #3a2f1a; color: #ffd76e; }
+.status-approved { background: #1a3a2a; color: #6dd47e; }
+.status-rejected { background: #3a1a1a; color: #ff7676; }
+.status-disbanded { background: #2a2a2a; color: #aaa; }
+
+.meta {
+  font-size: 24rpx;
+  color: #aaa;
+  line-height: 1.7;
+}
+.note {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #aaa;
+  background: #222;
+  padding: 12rpx;
+  border-radius: 8rpx;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+.btn {
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 8rpx;
+}
+.btn-ok { background: #1a3a2a; color: #6dd47e; }
+.btn-bad { background: #3a1a1a; color: #ff7676; }
+.btn-warn { background: #3a2f1a; color: #ffd76e; }
+.btn-ghost { background: #2a2a2a; color: #ccc; }
+.btn-danger { background: #2a1a1a; color: #ff4d4f; }
+.btn-hover { opacity: 0.7; }
+
+.loading {
+  text-align: center;
+  padding: 30rpx;
+  color: #777;
+  font-size: 24rpx;
+}

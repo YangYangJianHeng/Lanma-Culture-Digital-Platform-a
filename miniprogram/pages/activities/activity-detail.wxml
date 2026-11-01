@@ -1,0 +1,101 @@
+<view wx:if="{{activity}}" class="detail">
+  <view class="hero">
+    <view class="title">{{activity.title}}</view>
+    <view class="status-pill status-{{activity.status}}">
+      {{activity.status == 'pending' ? '审核中' : activity.status == 'closed' ? '已关闭' : activity.status == 'rejected' ? '已驳回' : activity.status == 'open' || activity.status == 'approved' ? '招募中' : activity.status}}
+    </view>
+  </view>
+
+  <view class="info-card">
+    <view class="info-row">
+      <view class="info-icon">📍</view>
+      <view class="info-body">
+        <view class="info-label">集合点</view>
+        <view class="info-value">{{activity.location || '未填写'}}</view>
+      </view>
+    </view>
+    <view class="info-row">
+      <view class="info-icon">🕒</view>
+      <view class="info-body">
+        <view class="info-label">开始时间</view>
+        <view class="info-value">{{formatTime(activity.startTime || activity.start_time)}}</view>
+      </view>
+    </view>
+    <view class="info-row" wx:if="{{activity.paceRange || activity.pace_range}}">
+      <view class="info-icon">🏃</view>
+      <view class="info-body">
+        <view class="info-label">配速区间</view>
+        <view class="info-value">{{activity.paceRange || activity.pace_range}}</view>
+      </view>
+    </view>
+    <view class="info-row" wx:if="{{activity.distanceKm || activity.distance_km}}">
+      <view class="info-icon">📏</view>
+      <view class="info-body">
+        <view class="info-label">距离</view>
+        <view class="info-value">{{activity.distanceKm || activity.distance_km}} 公里</view>
+      </view>
+    </view>
+    <view class="info-row">
+      <view class="info-icon">👥</view>
+      <view class="info-body">
+        <view class="info-label">名额</view>
+        <view class="info-value">
+          已报名 {{activity.registeredCount || activity.registered_count || 0}}
+          {{activity.capacity ? ' / ' + activity.capacity : ''}}
+        </view>
+      </view>
+    </view>
+    <view class="info-row" wx:if="{{activity.contactPhone || activity.contact_phone}}">
+      <view class="info-icon">📞</view>
+      <view class="info-body">
+        <view class="info-label">组织者电话</view>
+        <view class="info-value">{{activity.contactPhone || activity.contact_phone}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{activity.description}}" class="section">
+    <view class="section-title">📝 活动详情</view>
+    <view class="section-body">{{activity.description}}</view>
+  </view>
+
+  <view wx:if="{{registrations.length > 0}}" class="section">
+    <view class="section-title">👥 报名名单 ({{registrations.length}})</view>
+    <view wx:for="{{registrations}}" wx:key="id" class="member-row">
+      <view class="avatar">{{(item.userName || item.user_name || '匿').slice(0, 1)}}</view>
+      <view class="member-name">{{item.userName || item.user_name || '匿名用户'}}</view>
+      <view class="member-status">{{item.status == 'registered' ? '已报名' : item.status}}</view>
+    </view>
+  </view>
+
+  <!-- 邀请码 -->
+  <view class="section">
+    <view class="section-title-row">
+      <view class="section-title">🔗 邀请码</view>
+      <view class="invite-create" bindtap="onCreateInvite" hover-class="invite-create-hover">+ 生成</view>
+    </view>
+    <view wx:if="{{invites.length == 0}}" class="empty-tip">尚未生成邀请码,点击右上角生成 8 位邀请码分享给跑友</view>
+    <view wx:for="{{invites}}" wx:key="id" class="invite-row">
+      <view class="invite-code" data-code="{{item.code}}" bindtap="onCopyCode">{{item.code}}</view>
+      <view class="invite-meta">
+        <text>已用 {{item.currentUses || 0}}/{{item.maxUses}}</text>
+        <text wx:if="{{item.expiresAt || item.expires_at}}"> · 至 {{item.expiresAt || item.expires_at}}</text>
+      </view>
+      <view class="invite-stop" data-id="{{item.id}}" bindtap="onDeactivate">停用</view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <input class="phone-input" placeholder="可选:联系电话" value="{{phone}}" bindinput="onPhoneInput" />
+    <view wx:if="{{activity.status == 'approved' || activity.status == 'open'}}" class="btn btn-primary" bindtap="onRegister">立即报名</view>
+    <view wx:else class="btn btn-disabled">不可报名</view>
+  </view>
+</view>
+
+<view wx:elif="{{!loading}}" class="empty">
+  <view class="empty-icon">🚫</view>
+  <view class="empty-text">活动不存在或已删除</view>
+</view>
+
+<view wx:if="{{loading}}" class="loading">加载中...</view>

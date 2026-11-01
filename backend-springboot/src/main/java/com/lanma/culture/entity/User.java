@@ -25,6 +25,10 @@ public class User {
     @Column(name = "avatar_url", length = 255)
     private String avatarUrl;
 
+    /** 微信 openid / 同一稳定标识符 - 唯一,用于一键登录 */
+    @Column(name = "wx_openid", length = 64, unique = true)
+    private String wxOpenid;
+
     @Column(nullable = false, length = 20)
     private String role = "runner";
 

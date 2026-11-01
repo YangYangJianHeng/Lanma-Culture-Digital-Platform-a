@@ -1,0 +1,70 @@
+<view class="page">
+  <view class="cat-row-wrap">
+    <scroll-view scroll-x class="cat-row" enable-flex show-scrollbar="{{false}}">
+      <view class="cat-chip {{item == activeCat ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this"
+            data-cat="{{item}}" bindtap="onCatTap">{{item}}</view>
+    </scroll-view>
+    <view class="fav-btn {{showFavOnly ? 'active' : ''}}" bindtap="onToggleFavFilter">⭐ 我的收藏</view>
+  </view>
+
+  <view wx:if="{{foods.length === 0 && !loading}}" class="empty">
+    <view class="empty-icon">🍜</view>
+    <view>{{showFavOnly ? '还没有收藏，去试试喜欢的美食吧~' : '暂无美食'}}</view>
+  </view>
+
+  <view class="foods">
+    <view class="food-card card" wx:for="{{foods}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail" hover-class="card-hover">
+      <image wx:if="{{item.image_url}}" src="{{item.image_url}}" class="food-img" mode="aspectFill"></image>
+      <view wx:else class="food-img fallback">🍜</view>
+      <view class="food-body">
+        <view class="food-name">{{item.name}}</view>
+        <view class="food-meta">
+          <text class="tag">{{item.category}}</text>
+          <text wx:if="{{item.rating}}" class="text-small" style="color:#f57c00;">⭐ {{item.rating}}</text>
+        </view>
+        <view class="food-desc">{{item.description}}</view>
+        <view wx:if="{{item.address}}" class="food-addr text-muted text-small">📍 {{item.address}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详情弹层 -->
+  <view class="modal-mask" wx:if="{{detail}}" bindtap="closeDetail">
+    <view class="modal" catchtap="noop">
+      <image wx:if="{{detail.image_url}}" src="{{detail.image_url}}" class="modal-img" mode="aspectFill" bindtap="onPreviewImage"></image>
+      <view wx:else class="modal-img fallback">🍜</view>
+      <view class="modal-body">
+        <view class="modal-title">{{detail.name}}</view>
+        <view class="modal-meta">
+          <text class="tag">{{detail.category}}</text>
+          <text wx:if="{{detail.rating}}" class="text-small" style="color:#f57c00;">⭐ {{detail.rating}}</text>
+          <text wx:if="{{detail.price_range}}" class="text-muted text-small">💰 {{detail.price_range}}</text>
+        </view>
+        <view wx:if="{{detail.address}}" class="text-muted text-small addr">📍 {{detail.address}}</view>
+        <view class="modal-desc">{{detail.description}}</view>
+        <view wx:if="{{detail.recommend}}" class="modal-section">
+          <view class="modal-section-title">⭐ 推荐理由</view>
+          <view class="modal-section-body">{{detail.recommend}}</view>
+        </view>
+        <view wx:if="{{detail.ai_analysis}}" class="modal-section">
+          <view class="modal-section-title">🤖 AI 点评</view>
+          <view class="modal-section-body">{{detail.ai_analysis}}</view>
+        </view>
+        <view wx:if="{{detail.opening_hours}}" class="modal-section">
+          <view class="modal-section-title">🕐 营业时间</view>
+          <view class="modal-section-body">{{detail.opening_hours}}</view>
+        </view>
+
+        <view class="modal-actions">
+          <view class="fav-toggle {{detailFav ? 'active' : ''}}" catchtap="onToggleFav" data-id="{{detail.id}}">
+            {{detailFav ? '★ 已收藏' : '☆ 收藏'}}
+          </view>
+          <button class="share-btn" open-type="share">
+            <text>🔗 分享</text>
+          </button>
+        </view>
+        <view class="modal-close" bindtap="closeDetail">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -61,8 +61,7 @@ public class CacheConfig implements CachingConfigurer {
         return new CacheErrorHandler() {
             @Override
             public void handleCacheGetError(RuntimeException ex, org.springframework.cache.Cache cache, Object key) {
-                log.warn("Redis GET 失败 cache={} key={}: {}", cache.getName(), key, ex.getMessage());
-                throw ex;
+                log.warn("Redis GET 失败 cache={} key={}: {}, 降级为直接查询数据库", cache.getName(), key, ex.getMessage());
             }
 
             @Override

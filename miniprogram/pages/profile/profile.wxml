@@ -1,0 +1,146 @@
+<view class="page">
+  <!-- 用户卡片 -->
+  <view class="user-card">
+    <view class="user-row">
+      <view class="avatar-wrap" bindtap="onChooseAvatar" hover-class="avatar-hover">
+        <image wx:if="{{user && user.avatar_url}}" src="{{user.avatar_url}}" class="avatar" mode="aspectFill"></image>
+        <view wx:else class="avatar avatar-fallback">{{user.username[0] || '?'}}</view>
+      </view>
+      <view class="user-info">
+        <view class="user-name">{{(user && user.username) || '未登录'}}</view>
+        <view class="user-sub text-muted">
+          <text wx:if="{{user && user.bio}}">{{user.bio}}</text>
+          <text wx:else>👋 加入兰马文化数字平台</text>
+        </view>
+        <view class="user-meta text-muted text-small">
+          <text wx:if="{{joinDays > 0}}">🌱 已加入 {{joinDays}} 天</text>
+          <text wx:if="{{user && user.occupation}}">· {{user.occupation}}</text>
+        </view>
+      </view>
+      <view class="edit-btn" bindtap="goEdit" hover-class="btn-hover">编辑</view>
+    </view>
+
+    <view class="stats-row">
+      <view class="stat-item">
+        <view class="stat-num">{{stats.storyCount}}</view>
+        <view class="stat-label">故事</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num">{{stats.likeCount}}</view>
+        <view class="stat-label">收获赞</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num">{{stats.commentCount}}</view>
+        <view class="stat-label">评论</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num">{{stats.favFoods + stats.favTourism + stats.favLandmarks}}</view>
+        <view class="stat-label">收藏</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成就徽章 -->
+  <view class="card">
+    <view class="card-title">🏅 我的成就</view>
+    <view class="badge-grid">
+      <view class="badge {{item.unlocked ? 'unlocked' : 'locked'}}" wx:for="{{badges}}" wx:key="id">
+        <view class="badge-icon">{{item.icon}}</view>
+        <view class="badge-name">{{item.name}}</view>
+        <view class="badge-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="card">
+    <view class="card-title">我的</view>
+    <view class="menu">
+      <view class="menu-item" bindtap="goMyStories" hover-class="menu-hover">
+        <view class="menu-icon">📚</view>
+        <view class="menu-name">我的故事</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goFavorites" hover-class="menu-hover">
+        <view class="menu-icon">⭐</view>
+        <view class="menu-name">我的收藏</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goCheckins" hover-class="menu-hover">
+        <view class="menu-icon">📍</view>
+        <view class="menu-name">我的打卡</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goEdit" hover-class="menu-hover">
+        <view class="menu-icon">✏️</view>
+        <view class="menu-name">编辑资料</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goChangePwd" hover-class="menu-hover">
+        <view class="menu-icon">🔐</view>
+        <view class="menu-name">修改密码</view>
+        <view class="menu-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">更多服务</view>
+    <view class="menu">
+      <view class="menu-item" bindtap="goMedals" hover-class="menu-hover">
+        <view class="menu-icon">🏅</view>
+        <view class="menu-name">奖牌博物馆</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goWeather" hover-class="menu-hover">
+        <view class="menu-icon">⛅</view>
+        <view class="menu-name">比赛天气</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goMarathons" hover-class="menu-hover">
+        <view class="menu-icon">🏃</view>
+        <view class="menu-name">历届兰马</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goPublications" hover-class="menu-hover">
+        <view class="menu-icon">📢</view>
+        <view class="menu-name">小兰发布</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goAi" hover-class="menu-hover">
+        <view class="menu-icon">🤖</view>
+        <view class="menu-name">小兰 AI 助手</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view wx:if="{{user && user.role == 'admin'}}" class="menu-item menu-admin" bindtap="goAdmin" hover-class="menu-hover">
+        <view class="menu-icon">🛡</view>
+        <view class="menu-name">社交功能管理(Admin)</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goActivities" hover-class="menu-hover">
+        <view class="menu-icon">🤝</view>
+        <view class="menu-name">一起跑</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goTeams" hover-class="menu-hover">
+        <view class="menu-icon">👥</view>
+        <view class="menu-name">跑团</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goRunRecords" hover-class="menu-hover">
+        <view class="menu-icon">🏃</view>
+        <view class="menu-name">我的跑步记录</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goInviteJoin" hover-class="menu-hover">
+        <view class="menu-icon">🔗</view>
+        <view class="menu-name">输入邀请码</view>
+        <view class="menu-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{user}}" class="logout-btn" bindtap="onLogout" hover-class="btn-hover">退出登录</view>
+
+  <view class="footer text-muted text-small">兰马文化数字平台 · 微信小程序版</view>
+</view>

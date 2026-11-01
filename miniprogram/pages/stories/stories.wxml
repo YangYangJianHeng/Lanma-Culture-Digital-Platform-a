@@ -1,0 +1,94 @@
+<view class="page">
+  <!-- 顶部置顶 banner -->
+  <swiper wx:if="{{pinnedList.length}}" class="pinned-swiper" circular autoplay="{{pinnedList.length > 1}}" interval="6000">
+    <swiper-item wx:for="{{pinnedList}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="pinned-card">
+        <image wx:if="{{item.cover}}" src="{{item.cover}}" class="pinned-img" mode="aspectFill"></image>
+        <view wx:else class="pinned-img pinned-fallback">📖</view>
+        <view class="pinned-mask"></view>
+        <view class="pinned-content">
+          <view class="pinned-badge">🔥 热门精华</view>
+          <view class="pinned-title">{{item.title}}</view>
+          <view class="pinned-meta">@{{item.author}} · ❤ {{item.likes}}</view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 热门话题 -->
+  <view class="topics" wx:if="{{topics.length}}">
+    <view class="topic-chip {{keyword == item.q ? 'active' : ''}}" wx:for="{{topics}}" wx:key="key"
+          data-q="{{item.q}}" bindtap="onTopicTap" hover-class="topic-hover">
+      <text class="topic-icon">{{item.icon}}</text>
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-row">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索故事 / 标题 / 内容" value="{{keyword}}" bindinput="onSearchInput" bindconfirm="onConfirmSearch" confirm-type="search" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onClearSearch">✕</text>
+    </view>
+    <view class="sort-chip" bindtap="onSortChange">
+      <text>{{sorts[sortIndex].label}}</text>
+      <text class="caret">▾</text>
+    </view>
+  </view>
+
+  <!-- 年份筛选 -->
+  <scroll-view scroll-x class="year-row" enable-flex show-scrollbar="{{false}}">
+    <view class="year-chip {{year == null ? 'active' : ''}}" bindtap="onYearFilter" data-year="">全部</view>
+    <view class="year-chip {{year == item ? 'active' : ''}}" wx:for="{{years}}" wx:key="*this"
+          data-year="{{item}}" bindtap="onYearFilter">{{item}}</view>
+  </scroll-view>
+
+  <!-- 主体列表 -->
+  <view wx:if="{{stories.length === 0 && !pager.loading}}" class="empty-state">
+    <view class="empty-icon">📭</view>
+    <view class="empty-title">还没有相关故事</view>
+    <view class="empty-sub text-muted">换个关键词,或者分享你的第一篇兰马故事</view>
+    <view class="empty-cta" bindtap="goPublish" hover-class="btn-hover">✍️ 写一篇</view>
+  </view>
+
+  <view class="stories">
+    <view class="story-card card" wx:for="{{stories}}" wx:key="id"
+          data-id="{{item.id}}" bindtap="goDetail" hover-class="card-hover">
+      <view class="story-head">
+        <view class="author-info">
+          <view wx:if="{{item.authorAvatar}}" class="author-avatar" style="background-image:url({{item.authorAvatar}});"></view>
+          <view wx:else class="author-avatar author-fallback">{{item.authorName[0] || '?'}}</view>
+          <view>
+            <view class="author-name">{{item.authorName}}</view>
+            <view class="author-time text-muted text-small">{{item.createdText}}</view>
+          </view>
+        </view>
+        <view wx:if="{{item.bibText}}" class="bib">{{item.bibText}}</view>
+      </view>
+
+      <view class="story-title">{{item.title}}</view>
+      <view class="story-content">{{item.content}}</view>
+
+      <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" class="story-cover" mode="aspectFill" catchtap="noop"></image>
+
+      <view class="story-foot">
+        <view class="foot-stat">❤ {{item.likes_count || 0}}</view>
+        <view class="foot-stat">💬 {{item.comments_count || 0}}</view>
+        <view class="foot-stat">📖 {{item.views_count || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-more text-muted text-small" wx:if="{{pager.loading}}">加载中…</view>
+  <view class="loading-more text-muted text-small" wx:elif="{{pager.finished && stories.length}}">
+    已经到底啦，共 {{stories.length}} 篇故事
+  </view>
+
+  <!-- 浮动操作 -->
+  <view class="fab-group">
+    <view class="fab fab-secondary" bindtap="goMyStories" hover-class="fab-hover">📚</view>
+    <view class="fab fab-primary" bindtap="goPublish" hover-class="fab-hover">✍️</view>
+  </view>
+</view>

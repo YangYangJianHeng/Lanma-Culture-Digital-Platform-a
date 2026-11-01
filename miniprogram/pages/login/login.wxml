@@ -1,0 +1,86 @@
+<view class="page">
+  <view class="hero">
+    <view class="logo">🏃</view>
+    <view class="hero-title">兰马文化数字平台</view>
+    <view class="hero-sub">跑 · 阅 · 食 · 行 · 旅</view>
+  </view>
+
+  <!-- 微信一键登录面板 -->
+  <view wx:if="{{canIUseWxLogin}}" class="wx-card card">
+    <view class="wx-title">
+      <text class="wx-emoji">🟢</text>
+      <text>微信一键登录</text>
+    </view>
+    <view class="wx-sub">免注册,选择头像昵称即可</view>
+
+    <view class="wx-profile">
+      <button class="wx-avatar-btn"
+              bindtap="onChooseWxAvatar"
+              open-type="chooseAvatar"
+              hover-class="btn-hover">
+        <view wx:if="{{wxProfile.avatarUrl}}" class="wx-avatar" style="background-image:url({{wxProfile.avatarUrl}});"></view>
+        <view wx:else class="wx-avatar wx-avatar-empty">👤</view>
+        <view class="wx-avatar-hint">点击选择头像</view>
+      </button>
+
+      <view class="wx-nick-wrap">
+        <view class="wx-nick-label">昵称</view>
+        <input class="wx-nick-input"
+               placeholder="微信用户"
+               value="{{wxProfile.nickname}}"
+               bindinput="onNickNameInput"
+               maxlength="20" />
+      </view>
+    </view>
+
+    <button class="btn-wx"
+            bindtap="doWxLogin"
+            disabled="{{submitting}}"
+            hover-class="btn-hover">
+      <text wx:if="{{submitting}}">登录中...</text>
+      <text wx:else>🟢 微信账号登录</text>
+    </button>
+    <view class="wx-tip text-muted">首次使用将自动创建账号,绑定当前微信</view>
+
+    <view class="divider"><view class="line"></view><text>其他方式登录</text><view class="line"></view></view>
+  </view>
+
+  <!-- 账号密码登录 -->
+  <view class="form-card card">
+    <view class="field">
+      <view class="field-label">👤 用户名</view>
+      <input class="field-input" placeholder="请输入用户名" value="{{form.username}}" bindinput="onUsernameInput" maxlength="32" />
+    </view>
+    <view class="field">
+      <view class="field-label">🔒 密码</view>
+      <view class="pwd-row">
+        <input class="field-input" placeholder="请输入密码" password="{{!showPwd}}" value="{{form.password}}" bindinput="onPasswordInput" maxlength="32" />
+        <view class="eye" bindtap="onToggleShowPwd">{{showPwd ? '🙈' : '👁️'}}</view>
+      </view>
+    </view>
+
+    <view class="row-between">
+      <view class="remember">
+        <switch checked="{{remember}}" bindchange="onToggleRemember" color="#b71c1c" />
+        <text>记住密码</text>
+      </view>
+      <view class="link" bindtap="onFillTest" hover-class="link-hover">填充测试账号</view>
+    </view>
+
+    <button class="btn-primary" bindtap="onSubmit" disabled="{{submitting}}" hover-class="btn-hover">
+      {{submitting ? '登录中...' : '账 号 登 录'}}
+    </button>
+  </view>
+
+  <!-- 协议 -->
+  <view class="agreement-row">
+    <switch checked="{{acceptAgreement}}" bindchange="onToggleAgreement" color="#b71c1c" />
+    <text class="agreement-text">我已阅读并同意</text>
+    <text class="link" bindtap="goAgreement" hover-class="link-hover">《用户协议与隐私政策》</text>
+  </view>
+
+  <view class="footer-row">
+    <text class="text-muted">还没有账号？</text>
+    <text class="link" bindtap="goRegister" hover-class="link-hover">立即注册</text>
+  </view>
+</view>

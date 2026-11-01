@@ -1,0 +1,80 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/stories/stories",
+    "pages/ai/ai",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/story-detail/story-detail",
+    "pages/story-publish/story-publish",
+    "pages/my-stories/my-stories",
+    "pages/medals/medals",
+    "pages/gallery/gallery",
+    "pages/foods/foods",
+    "pages/tourism/tourism",
+    "pages/weather/weather",
+    "pages/landmarks/landmarks",
+    "pages/publications/publications",
+    "pages/marathons/marathons",
+    "pages/edit-profile/edit-profile",
+    "pages/change-password/change-password",
+    "pages/favorites-aggregated/favorites-aggregated",
+    "pages/checkins/checkins",
+    "pages/admin/admin",
+    "pages/admin/activity-manage",
+    "pages/admin/team-manage",
+    "pages/admin/report-manage",
+    "pages/admin/ranking-config",
+    "pages/activities/activities",
+    "pages/activities/activity-detail",
+    "pages/activities/activity-create",
+    "pages/teams/teams",
+    "pages/teams/team-detail",
+    "pages/teams/team-create",
+    "pages/run-records/run-records",
+    "pages/invite-join/invite-join"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#b71c1c",
+    "navigationBarTitleText": "兰马文化数字平台",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#b71c1c",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/stories/stories",
+        "text": "故事",
+        "iconPath": "images/tab-story.png",
+        "selectedIconPath": "images/tab-story-active.png"
+      },
+      {
+        "pagePath": "pages/ai/ai",
+        "text": "小兰",
+        "iconPath": "images/tab-ai.png",
+        "selectedIconPath": "images/tab-ai-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab-me.png",
+        "selectedIconPath": "images/tab-me-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

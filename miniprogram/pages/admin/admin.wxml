@@ -1,0 +1,68 @@
+<view class="admin-page" wx:if="{{authorized}}">
+  <!-- 头部 -->
+  <view class="hero">
+    <view class="hero-title">🛡 社交功能管理</view>
+    <view class="hero-sub">活动审核 · 跑团管理 · 违规处理 · 榜单配置</view>
+    <view class="hero-sync">最后同步:{{lastSyncAt || '--'}}</view>
+  </view>
+
+  <!-- 统计概览 -->
+  <view class="stats-grid">
+    <view class="stat-card">
+      <view class="stat-title">🏃 活动</view>
+      <view class="stat-row"><text class="lbl">总数</text><text class="val">{{stats.activity.total || 0}}</text></view>
+      <view class="stat-row pending"><text class="lbl">待审核</text><text class="val">{{stats.activity.pending || 0}}</text></view>
+      <view class="stat-row ok"><text class="lbl">已发布</text><text class="val">{{stats.activity.approved || 0}}</text></view>
+      <view class="stat-row bad"><text class="lbl">已驳回</text><text class="val">{{stats.activity.rejected || 0}}</text></view>
+    </view>
+
+    <view class="stat-card">
+      <view class="stat-title">👥 跑团</view>
+      <view class="stat-row"><text class="lbl">总数</text><text class="val">{{stats.team.total || 0}}</text></view>
+      <view class="stat-row pending"><text class="lbl">待审核</text><text class="val">{{stats.team.pending || 0}}</text></view>
+      <view class="stat-row ok"><text class="lbl">已成立</text><text class="val">{{stats.team.approved || 0}}</text></view>
+      <view class="stat-row bad"><text class="lbl">已解散</text><text class="val">{{stats.team.disbanded || 0}}</text></view>
+    </view>
+
+    <view class="stat-card">
+      <view class="stat-title">⚠️ 举报</view>
+      <view class="stat-row"><text class="lbl">总数</text><text class="val">{{stats.report.total || 0}}</text></view>
+      <view class="stat-row pending"><text class="lbl">待处理</text><text class="val">{{stats.report.pending || 0}}</text></view>
+      <view class="stat-row ok"><text class="lbl">已处理</text><text class="val">{{stats.report.handled || 0}}</text></view>
+      <view class="stat-row bad"><text class="lbl">驳回</text><text class="val">{{stats.report.dismissed || 0}}</text></view>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick">
+    <view class="quick-item" data-page="activity-manage" bindtap="go" hover-class="quick-hover">
+      <view class="quick-icon">🏃</view>
+      <view class="quick-name">约跑活动审核</view>
+      <view class="quick-desc">{{stats.activity.pending || 0}} 个待审</view>
+    </view>
+    <view class="quick-item" data-page="team-manage" bindtap="go" hover-class="quick-hover">
+      <view class="quick-icon">👥</view>
+      <view class="quick-name">跑团管理</view>
+      <view class="quick-desc">{{stats.team.pending || 0}} 个待审</view>
+    </view>
+    <view class="quick-item" data-page="report-manage" bindtap="go" hover-class="quick-hover">
+      <view class="quick-icon">⚠️</view>
+      <view class="quick-name">违规内容处理</view>
+      <view class="quick-desc">{{stats.report.pending || 0}} 条待处理</view>
+    </view>
+    <view class="quick-item" data-page="ranking-config" bindtap="go" hover-class="quick-hover">
+      <view class="quick-icon">🏆</view>
+      <view class="quick-name">团队排行配置</view>
+      <view class="quick-desc">权重 / 规则</view>
+    </view>
+  </view>
+
+  <view class="footer-tip">仅管理员可访问 · 所有操作均会记录</view>
+</view>
+
+<view class="no-auth" wx:else>
+  <view class="no-auth-icon">🔒</view>
+  <view class="no-auth-title">无访问权限</view>
+  <view class="no-auth-sub">仅管理员角色(role=admin)可进入此页面</view>
+  <view class="no-auth-current">当前账号:{{(user && user.username) || '未登录'}} ({{(user && user.role) || 'guest'}})</view>
+</view>

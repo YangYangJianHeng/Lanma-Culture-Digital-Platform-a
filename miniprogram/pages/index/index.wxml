@@ -1,0 +1,133 @@
+<view class="container {{splash ? 'splash' : ''}}">
+  <!-- 启动动画 -->
+  <view class="splash-mask" wx:if="{{splash}}">
+    <view class="splash-logo">🏃</view>
+    <view class="splash-text">兰马文化数字平台</view>
+    <view class="splash-sub">黄河之都 · 金城兰州</view>
+    <view class="splash-spinner"></view>
+  </view>
+
+  <!-- Banner 区域(倒计时+赛季)/轮播 -->
+  <swiper class="top-banner" indicator-dots="{{banners.length > 1}}" indicator-active-color="auto" autoplay="{{banners.length?1:false}}" interval="4500" duration="6500" circular="{{banners.length}}">
+    <swiper-item wx:for="{{banners}}" wx:key="id" data-url="{{item.url}}" bindtap="onBannerTap">
+      <view class="banner banner-cover" style="background: linear-gradient(135deg, {{item.bg1}}, {{item.bg2}});">
+        <view class="banner-row">
+          <view>
+            <text class="banner-title">{{item.title}}</text>
+            <text class="banner-sub">{{item.subtitle}}</text>
+          </view>
+          <view class="banner-greet" wx:if="{{item.greet}}">{{item.greet}} 👋</view>
+        </view>
+        <view class="countdown-row" wx:if="{{item.days != null}}">
+          <text class="cd-num">{{item.days}}</text>
+          <text class="cd-label">{{item.cdLabel}}</text>
+        </view>
+        <view class="banner-meta" wx:if="{{item.meta}}">
+          <text wx:for="{{item.meta}}" wx:key="*this" wx:for-item="m">{{m}}</text>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 骨架屏 -->
+  <view class="skeleton-wrap" wx:if="{{showSkeleton}}">
+    <view class="sk-card"></view>
+    <view class="sk-grid">
+      <view class="sk-item" wx:for="{{[0,1,2,3,4,5,6,7]}}" wx:key="*this"></view>
+    </view>
+    <view class="sk-card"></view>
+    <view class="sk-card"></view>
+  </view>
+
+  <block wx:if="{{!showSkeleton}}">
+    <!-- 八宫格入口 -->
+    <view class="grid card">
+      <view class="grid-item" wx:for="{{modules}}" wx:key="name" data-path="{{item.path}}" bindtap="goModule" hover-class="grid-hover">
+        <view class="grid-icon">{{item.icon}}</view>
+        <view class="grid-name">{{item.name}}</view>
+      </view>
+    </view>
+
+    <!-- 实时天气 -->
+    <view class="weather-card" wx:if="{{weather}}">
+      <view class="weather-head">
+        <text class="card-title">兰州当前天气</text>
+        <view class="weather-mini">
+          <text wx:if="{{weather.temperature}}">{{weather.temperature}}°</text>
+          <text wx:if="{{weather.weatherCondition}}">· {{weather.weatherCondition}}</text>
+        </view>
+      </view>
+      <view class="weather-row">
+        <view class="weather-temp">{{weather.temperature || '--'}}°</view>
+        <view class="weather-info">
+          <view>{{weather.weatherCondition || weather.description || '晴'}}</view>
+          <view class="text-muted text-small">湿度 {{weather.humidity || '--'}}% · 风速 {{weather.windSpeed || weather.wind_speed || '--'}} m/s</view>
+        </view>
+      </view>
+      <view class="text-muted text-small mt8">更新时间 {{weather.recordTime || weather.observed_at || ''}}</view>
+    </view>
+
+    <!-- 小兰发布 -->
+    <view class="card" wx:if="{{publications.length}}">
+      <view class="flex-between">
+        <view class="card-title">📢 小兰发布</view>
+        <view class="more-btn" bindtap="goPublications">更多 ›</view>
+      </view>
+      <view class="pub-item" wx:for="{{publications}}" wx:key="id" data-id="{{item.id}}" bindtap="goPublicationDetail" hover-class="pub-hover">
+        <view class="pub-title">{{item.title}}</view>
+        <view class="pub-meta text-muted text-small">{{item.created_at || item.updated_at}}</view>
+      </view>
+    </view>
+
+    <!-- 最新跑者故事 -->
+    <view class="card" wx:if="{{latestStories.length}}">
+      <view class="flex-between">
+        <view class="card-title">🏃 最新跑者故事</view>
+        <view class="more-btn" bindtap="goAllStories">广场 ›</view>
+      </view>
+      <view class="story-row" wx:for="{{latestStories}}" wx:key="id" data-id="{{item.id}}" bindtap="goStoryDetail" hover-class="card-hover">
+        <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" class="story-thumb" mode="aspectFill"></image>
+        <view wx:else class="story-thumb fallback">📖</view>
+        <view class="story-content">
+          <view class="story-title">{{item.title}}</view>
+          <view class="story-meta text-muted text-small">{{item.authorName}} · {{item.createdText}}</view>
+          <view class="story-text">{{item.content}}</view>
+        </view>
+      </view>
+      <view class="publish-cta" bindtap="goPublish" hover-class="btn-hover">
+        <text>✍️ 分享你的兰马故事</text>
+      </view>
+    </view>
+
+    <!-- 个性化推荐：美食 -->
+    <view class="card" wx:if="{{recommendedFoods.length}}">
+      <view class="flex-between">
+        <view class="card-title">为你推荐 · 美食</view>
+        <text wx:if="{{recommendReason}}" class="text-muted text-small">{{recommendReason}}</text>
+      </view>
+      <view class="mini-grid">
+        <view class="mini-item" wx:for="{{recommendedFoods}}" wx:key="id" data-id="{{item.id}}" data-type="food" bindtap="goModule" data-path="/pages/foods/foods" hover-class="grid-hover">
+          <image wx:if="{{item.image_url}}" src="{{item.image_url}}" class="mini-img" mode="aspectFill"></image>
+          <view wx:else class="mini-img fallback">🍜</view>
+          <view class="mini-title">{{item.name}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 个性化推荐：景点 -->
+    <view class="card" wx:if="{{recommendedSpots.length}}">
+      <view class="flex-between">
+        <view class="card-title">为你推荐 · 景点</view>
+      </view>
+      <view class="mini-grid">
+        <view class="mini-item" wx:for="{{recommendedSpots}}" wx:key="id" data-id="{{item.id}}" data-type="spot" bindtap="goModule" data-path="/pages/tourism/tourism" hover-class="grid-hover">
+          <image wx:if="{{item.image_url}}" src="{{item.image_url}}" class="mini-img" mode="aspectFill"></image>
+          <view wx:else class="mini-img fallback">🏯</view>
+          <view class="mini-title">{{item.name}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer text-muted text-small">兰马文化数字平台 · 微信小程序版</view>
+  </block>
+</view>

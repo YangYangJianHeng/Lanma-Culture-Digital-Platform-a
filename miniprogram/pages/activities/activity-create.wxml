@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="form-card">
+    <view class="form-row">
+      <view class="form-label">活动主题<text class="required">*</text></view>
+      <input class="form-input" data-field="title" value="{{form.title}}" placeholder="例:周三晨跑 · 兰州黄河沿岸 5km" bindinput="onInput" />
+    </view>
+
+    <view class="form-row" bindtap="onChooseLocation">
+      <view class="form-label">集合点<text class="required">*</text></view>
+      <view class="form-value {{form.location ? '' : 'placeholder'}}">{{form.location || '点击选择位置'}}</view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">开始时间<text class="required">*</text></view>
+      <picker mode="datetime" value="{{form.startTime}}" bindchange="onChooseTime" class="form-value {{form.startTime ? '' : 'placeholder'}}">
+        {{form.startTime || '点击选择'}}
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">配速区间</view>
+      <input class="form-input" data-field="paceRange" value="{{form.paceRange}}" placeholder="例:5:00-6:00" bindinput="onInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">距离(km)</view>
+      <input class="form-input" type="digit" data-field="distanceKm" value="{{form.distanceKm}}" placeholder="例:5" bindinput="onInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">名额</view>
+      <input class="form-input" type="number" data-field="capacity" value="{{form.capacity}}" placeholder="留空表示不限" bindinput="onInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-label">联系电话</view>
+      <input class="form-input" type="number" data-field="contactPhone" value="{{form.contactPhone}}" placeholder="可选" bindinput="onInput" />
+    </view>
+
+    <view class="form-row form-row-multi">
+      <view class="form-label">活动说明</view>
+      <textarea class="form-textarea" data-field="description" value="{{form.description}}" placeholder="介绍一下路线、注意事项等" bindinput="onInput" maxlength="500" auto-height />
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <view class="submit-btn {{submitting ? 'btn-disabled' : ''}}" bindtap="onSubmit">{{submitting ? '提交中...' : '提交(待审核)'}}</view>
+  </view>
+</view>

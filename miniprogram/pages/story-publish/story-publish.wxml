@@ -1,0 +1,43 @@
+<view class="page">
+  <view class="form-card">
+    <view class="form-row">
+      <text class="form-label">参赛年份</text>
+      <picker bindchange="onYearChange" value="{{years.indexOf(form.race_year)}}" range="{{years}}">
+        <view class="picker">{{form.race_year}} 年</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">号码布</text>
+      <input class="form-input" placeholder="选填" data-field="bib_number" bindinput="onFieldInput" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">完赛成绩</text>
+      <input class="form-input" placeholder="如 4:23:15" data-field="finish_time" bindinput="onFieldInput" />
+    </view>
+
+    <input class="title-input" placeholder="给你的故事起个标题" data-field="title" bindinput="onFieldInput" />
+    <textarea class="content-area" placeholder="分享你的参赛故事..." maxlength="2000" data-field="content" bindinput="onFieldInput"></textarea>
+
+    <view class="image-area">
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image src="{{item}}" class="image" mode="aspectFill" data-url="{{item}}" bindtap="onPreviewImage"></image>
+          <view class="image-remove" data-idx="{{index}}" bindtap="onRemoveImage">×</view>
+        </view>
+        <view wx:if="{{images.length < 9}}" class="image-add" bindtap="onChooseImage">
+          <text>+ 添加图片</text>
+          <text class="text-muted text-small">{{images.length}}/9</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">公开</text>
+      <switch checked="{{form.is_public}}" bindchange="onPublicSwitch" color="#b71c1c" />
+    </view>
+
+    <button class="btn-primary" bindtap="onSubmit" disabled="{{submitting}}" style="margin-top:32rpx;">
+      {{submitting ? submittingText : submitText}}
+    </button>
+  </view>
+</view>

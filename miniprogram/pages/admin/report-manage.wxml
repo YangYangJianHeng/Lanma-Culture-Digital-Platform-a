@@ -1,0 +1,54 @@
+<view class="page">
+  <!-- 状态筛选 -->
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{statusTabs}}" wx:key="key"
+          class="tab {{activeStatus == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchStatus">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- 对象筛选 -->
+  <scroll-view scroll-x class="tabs tabs-sub" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{targetTabs}}" wx:key="key"
+          class="tab tab-sub {{activeTarget == item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="switchTarget">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{items.length == 0 && !loading}}" class="empty">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">暂无举报</view>
+  </view>
+
+  <view wx:for="{{items}}" wx:key="id" class="card">
+    <view class="card-head">
+      <view class="title">
+        <text class="target-badge">{{item.targetType == 'story' ? '故事' : item.targetType == 'comment' ? '评论' : item.targetType == 'activity' ? '活动' : item.targetType == 'team' ? '跑团' : item.targetType}}</text>
+        #{{item.targetId || item.target_id}}
+      </view>
+      <view class="status status-{{item.status}}">{{item.status == 'pending' ? '待处理' : item.status == 'handled' ? '已处理' : item.status == 'dismissed' ? '驳回' : '已忽略'}}</view>
+    </view>
+    <view class="meta">
+      <view>📌 原因:<text class="reason">{{item.reason == 'spam' ? '垃圾广告' : item.reason == 'abuse' ? '辱骂攻击' : item.reason == 'porn' ? '色情低俗' : item.reason == 'illegal' ? '违法' : '其他'}}</view>
+      <view>👤 举报人:{{item.userName || item.user_name}}</view>
+      <view>🕒 提交时间:{{item.createdAt || item.created_at}}</view>
+      <view wx:if="{{item.description}}">📝 说明:{{item.description}}</view>
+      <view wx:if="{{item.action}}">⚙ 处理动作:{{item.action}}{{item.resolutionNote ? ' · ' + item.resolutionNote : ''}}</view>
+    </view>
+
+    <view wx:if="{{item.status == 'pending'}}" class="actions">
+      <view class="btn btn-danger" data-id="{{item.id}}" data-action="delete" bindtap="onHandle">🗑 删除内容</view>
+      <view class="btn btn-warn" data-id="{{item.id}}" data-action="warn" bindtap="onHandle">⚠ 警告</view>
+      <view class="btn btn-bad" data-id="{{item.id}}" data-action="ban" bindtap="onHandle">🚫 封禁</view>
+      <view class="btn btn-ghost" data-id="{{item.id}}" bindtap="onIgnore">忽略</view>
+    </view>
+    <view wx:else class="actions">
+      <view class="btn btn-ghost" data-id="{{item.id}}" bindtap="onDelete">删除记录</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{finished && items.length > 0}}" class="loading">没有更多了</view>
+</view>
